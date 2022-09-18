@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name= "category", uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
-@JsonIgnoreProperties({"products"})
+@JsonIgnoreProperties({"spaces", "services"})
 public class Category extends BaseEntity {
 
     @Column(name = "name")

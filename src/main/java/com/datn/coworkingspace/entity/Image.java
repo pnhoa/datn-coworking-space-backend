@@ -11,8 +11,8 @@ public class Image extends BaseEntity {
     private String url;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "space_id")
+    private Space space;
 
     public Image() {
     }
@@ -33,11 +33,11 @@ public class Image extends BaseEntity {
         this.url = url;
     }
 
-    public Post getPost() {
-        return post;
+    public Space getSpace() {
+        return space;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setSpace(Space space) {
+        this.space = space;
     }
 }

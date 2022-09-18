@@ -5,7 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -13,8 +15,12 @@ import java.util.Set;
 @JsonIgnoreProperties({"category"})
 public class Space extends BaseEntity {
 
+    private String name;
+
     @Column(name = "price")
     private BigDecimal price;
+
+    private String largeImage;
 
     @Column(name = "min_price")
     private BigDecimal minPrice;
@@ -33,6 +39,8 @@ public class Space extends BaseEntity {
 
     private boolean status;
 
+    private boolean approved;
+
     private double xCoordinate;
 
     private double yCoordinate;
@@ -42,10 +50,6 @@ public class Space extends BaseEntity {
 
     @Column(name = "rating_average")
     private BigDecimal ratingAverage;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "space_description_id")
@@ -76,11 +80,33 @@ public class Space extends BaseEntity {
     @JsonIgnoreProperties("space")
     private Set<ServiceSpace> serviceSpaces = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "space",
+            orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "space",
+            orphanRemoval = true)
+    private List<Image> images = new ArrayList<>();
+
     @Transient
     @JsonProperty(value = "categoryId")
     private Long categoryIds;
 
     public Space() {
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public BigDecimal getPrice() {
@@ -179,12 +205,44 @@ public class Space extends BaseEntity {
         this.ratingAverage = ratingAverage;
     }
 
-    public Post getPost() {
-        return post;
+    public String getLargeImage() {
+        return largeImage;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setLargeImage(String largeImage) {
+        this.largeImage = largeImage;
+    }
+
+    public boolean isApproved() {
+        return approved;
+    }
+
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 
     public Category getCategory() {

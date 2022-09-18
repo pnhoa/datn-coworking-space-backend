@@ -18,5 +18,4 @@ public interface IRoleService {
 
     MessageResponse updateRole(Long theId, RoleDTO theRoleDto);
 
-    void deleteProduct(Long theId);
 }

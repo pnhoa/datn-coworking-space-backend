@@ -4,7 +4,9 @@ import com.datn.coworkingspace.enums.AuthProvider;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -56,6 +58,15 @@ public class User extends BaseEntity{
     @JsonIgnoreProperties("users")
     private Set<Role> roles = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "user",
+            orphanRemoval = true)
+    private List<Space> spaces = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "user",
+            orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     @Transient
     private String roleCode;
@@ -158,4 +169,14 @@ public class User extends BaseEntity{
     public String getProviderId() { return providerId; }
 
     public void setProviderId(String providerId) { this.providerId = providerId; }
+
+    public List<Space> getSpaces() { return spaces; }
+
+    public void setSpaces(List<Space> spaces) { this.spaces = spaces; }
+
+    public List<Comment> getComments() { return comments; }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
 }
