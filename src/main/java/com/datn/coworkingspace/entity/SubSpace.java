@@ -1,6 +1,7 @@
 package com.datn.coworkingspace.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -23,6 +24,12 @@ public class SubSpace extends BaseEntity {
     @JoinColumn(name = "service_space_id")
     @JsonIgnoreProperties("subSpaces")
     private ServiceSpace serviceSpace;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "package_id")
+    @JsonIgnoreProperties("subSpaces")
+    @JsonProperty(value = "package")
+    private Package packageSubSpace;
 
     public SubSpace() {
     }
@@ -74,4 +81,8 @@ public class SubSpace extends BaseEntity {
     public void setServiceSpace(ServiceSpace serviceSpace) {
         this.serviceSpace = serviceSpace;
     }
+
+    public Package getPackageSubSpace() { return packageSubSpace; }
+
+    public void setPackageSubSpace(Package packageSubSpace) { this.packageSubSpace = packageSubSpace; }
 }

@@ -20,6 +20,8 @@ public class Post extends BaseEntity {
 
     private boolean disable;
 
+    private String largeImage;
+
     @OneToMany(cascade = CascadeType.ALL,
             mappedBy = "post",
             orphanRemoval = true)
@@ -106,5 +108,13 @@ public class Post extends BaseEntity {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getLargeImage() {
+        return largeImage;
+    }
+
+    public void setLargeImage(String largeImage) {
+        this.largeImage = largeImage;
     }
 }

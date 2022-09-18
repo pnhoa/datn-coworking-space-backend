@@ -3,11 +3,16 @@ package com.datn.coworkingspace.entity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "amenity")
-public class Amenity extends BaseEntity {
+@Table(name = "space_amenity")
+public class SpaceAmenity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
     @OneToOne(cascade = CascadeType.ALL,
-            mappedBy = "amenity",
+            mappedBy = "spaceAmenity",
             fetch = FetchType.LAZY,
             optional = false)
     private Space space;
@@ -28,7 +33,17 @@ public class Amenity extends BaseEntity {
 
     private boolean motel;
 
-    public Amenity() {
+    private boolean catering;
+
+    public SpaceAmenity() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Space getSpace() {
@@ -101,5 +116,13 @@ public class Amenity extends BaseEntity {
 
     public void setMotel(boolean motel) {
         this.motel = motel;
+    }
+
+    public boolean isCatering() {
+        return catering;
+    }
+
+    public void setCatering(boolean catering) {
+        this.catering = catering;
     }
 }

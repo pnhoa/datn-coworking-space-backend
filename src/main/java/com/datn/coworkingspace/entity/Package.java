@@ -1,15 +1,23 @@
 package com.datn.coworkingspace.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "package")
 public class Package extends BaseEntity {
 
+    // package of space (Day, Month,....)
     private String type;
 
     private String note;
+
+    @OneToMany(mappedBy = "packageSubSpace", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("packageSubSpace")
+    private Set<SubSpace> subSpaces = new HashSet<>();
 
     public Package() {
     }
@@ -29,4 +37,8 @@ public class Package extends BaseEntity {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public Set<SubSpace> getSubSpaces() { return subSpaces; }
+
+    public void setSubSpaces(Set<SubSpace> subSpaces) { this.subSpaces = subSpaces; }
 }

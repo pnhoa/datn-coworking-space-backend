@@ -13,18 +13,6 @@ import java.util.Set;
 @JsonIgnoreProperties({"category"})
 public class Space extends BaseEntity {
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "short_description" ,columnDefinition = "TEXT")
-    private String shortDescription;
-
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
-
-    @Column(name = "address", nullable = false)
-    private String address;
-
     @Column(name = "price")
     private BigDecimal price;
 
@@ -36,11 +24,6 @@ public class Space extends BaseEntity {
 
     @Column(name = "number_of_room")
     private Integer numberOfRoom;
-
-    @Column(name = "number_of_people")
-    private Integer numberOfPeople;
-
-    private String operatingTime;
 
     private BigDecimal acreage;
 
@@ -65,8 +48,24 @@ public class Space extends BaseEntity {
     private Post post;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "amenity_id")
-    private Amenity amenity;
+    @JoinColumn(name = "space_description_id")
+    private SpaceDescription spaceDescription;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "space_contact_id")
+    private SpaceContact spaceContact;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "space_amenity_id")
+    private SpaceAmenity spaceAmenity;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "space_address_id")
+    private SpaceAddress spaceAddress;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "space_operation_time_id")
+    private SpaceOperationTime spaceOperationTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
@@ -82,38 +81,6 @@ public class Space extends BaseEntity {
     private Long categoryIds;
 
     public Space() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getShortDescription() {
-        return shortDescription;
-    }
-
-    public void setShortDescription(String shortDescription) {
-        this.shortDescription = shortDescription;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public BigDecimal getPrice() {
@@ -146,14 +113,6 @@ public class Space extends BaseEntity {
 
     public void setNumberOfRoom(Integer numberOfRoom) {
         this.numberOfRoom = numberOfRoom;
-    }
-
-    public Integer getNumberOfPeople() {
-        return numberOfPeople;
-    }
-
-    public void setNumberOfPeople(Integer numberOfPeople) {
-        this.numberOfPeople = numberOfPeople;
     }
 
     public BigDecimal getAcreage() {
@@ -228,14 +187,6 @@ public class Space extends BaseEntity {
         this.post = post;
     }
 
-    public Amenity getAmenity() {
-        return amenity;
-    }
-
-    public void setAmenity(Amenity amenity) {
-        this.amenity = amenity;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -248,15 +199,51 @@ public class Space extends BaseEntity {
 
     public void setServiceSpaces(Set<ServiceSpace> serviceSpaces) { this.serviceSpaces = serviceSpaces; }
 
-    public String getOperatingTime() {  return operatingTime; }
-
-    public void setOperatingTime(String operatingTime) { this.operatingTime = operatingTime; }
-
     public Long getCategoryIds() {
         return categoryIds;
     }
 
     public void setCategoryIds(Long categoryIds) {
         this.categoryIds = categoryIds;
+    }
+
+    public SpaceDescription getSpaceDescription() {
+        return spaceDescription;
+    }
+
+    public void setSpaceDescription(SpaceDescription spaceDescription) {
+        this.spaceDescription = spaceDescription;
+    }
+
+    public SpaceContact getSpaceContact() {
+        return spaceContact;
+    }
+
+    public void setSpaceContact(SpaceContact spaceContact) {
+        this.spaceContact = spaceContact;
+    }
+
+    public SpaceAmenity getSpaceAmenity() {
+        return spaceAmenity;
+    }
+
+    public void setSpaceAmenity(SpaceAmenity spaceAmenity) {
+        this.spaceAmenity = spaceAmenity;
+    }
+
+    public SpaceAddress getSpaceAddress() {
+        return spaceAddress;
+    }
+
+    public void setSpaceAddress(SpaceAddress spaceAddress) {
+        this.spaceAddress = spaceAddress;
+    }
+
+    public SpaceOperationTime getSpaceOperationTime() {
+        return spaceOperationTime;
+    }
+
+    public void setSpaceOperationTime(SpaceOperationTime spaceOperationTime) {
+        this.spaceOperationTime = spaceOperationTime;
     }
 }
