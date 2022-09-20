@@ -19,6 +19,11 @@ public class Package extends BaseEntity {
     @JsonIgnoreProperties("packageSubSpace")
     private Set<SubSpace> subSpaces = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "service_space_id")
+    @JsonIgnoreProperties("packages")
+    private ServiceSpace serviceSpace;
+
     public Package() {
     }
 
@@ -41,4 +46,8 @@ public class Package extends BaseEntity {
     public Set<SubSpace> getSubSpaces() { return subSpaces; }
 
     public void setSubSpaces(Set<SubSpace> subSpaces) { this.subSpaces = subSpaces; }
+
+    public ServiceSpace getServiceSpace() { return serviceSpace; }
+
+    public void setServiceSpace(ServiceSpace serviceSpace) { this.serviceSpace = serviceSpace; }
 }

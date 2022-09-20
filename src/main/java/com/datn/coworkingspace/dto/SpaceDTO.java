@@ -55,13 +55,17 @@ public class SpaceDTO extends AbstractDTO {
 
     private SpaceAddressDTO spaceAddressDTO;
 
-    private List<SpaceOperationTime> spaceOperationTimes;
+    private List<SpaceOperationTimeDTO> SpaceOperationTimeDTOs;
 
     private List<String> imageUrls;
 
     private CustomerDTO userDTO;
 
     private Category category;
+
+    private List<CommentDTO> commentDTOs;
+
+    private List<ServiceSpaceDTO> serviceSpaceDTOS;
 
     @NotNull(message = "Please input user id")
     private Long userId;
@@ -230,9 +234,9 @@ public class SpaceDTO extends AbstractDTO {
         this.spaceAddressDTO = spaceAddressDTO;
     }
 
-    public List<SpaceOperationTime> getSpaceOperationTimes() { return spaceOperationTimes; }
+    public List<SpaceOperationTimeDTO> getSpaceOperationTimeDTOs() { return SpaceOperationTimeDTOs; }
 
-    public void setSpaceOperationTimes(List<SpaceOperationTime> spaceOperationTimes) { this.spaceOperationTimes = spaceOperationTimes; }
+    public void setSpaceOperationTimeDTOs(List<SpaceOperationTimeDTO> spaceOperationTimeDTOs) { SpaceOperationTimeDTOs = spaceOperationTimeDTOs; }
 
     public List<String> getImageUrls() {
         return imageUrls;
@@ -248,6 +252,22 @@ public class SpaceDTO extends AbstractDTO {
 
     public void setUserDTO(CustomerDTO userDTO) {
         this.userDTO = userDTO;
+    }
+
+    public List<CommentDTO> getCommentDTOs() {
+        return commentDTOs;
+    }
+
+    public void setCommentDTOs(List<CommentDTO> commentDTOs) {
+        this.commentDTOs = commentDTOs;
+    }
+
+    public List<ServiceSpaceDTO> getServiceSpaceDTOS() {
+        return serviceSpaceDTOS;
+    }
+
+    public void setServiceSpaceDTOS(List<ServiceSpaceDTO> serviceSpaceDTOS) {
+        this.serviceSpaceDTOS = serviceSpaceDTOS;
     }
 
     public Long getUserId() {

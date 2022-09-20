@@ -1,8 +1,8 @@
 package com.datn.coworkingspace.service;
 
-import com.datn.coworkingspace.dto.MessageResponse;
-import com.datn.coworkingspace.dto.SpaceDTO;
+import com.datn.coworkingspace.dto.*;
 import com.datn.coworkingspace.entity.*;
+import com.datn.coworkingspace.entity.Package;
 import com.datn.coworkingspace.exception.ResourceNotFoundException;
 import com.datn.coworkingspace.repository.SpaceRepository;
 import com.datn.coworkingspace.repository.UserRepository;
@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,6 +32,9 @@ public class SpaceService implements ISpaceService {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private ModelMapper mapper;
 
     @Override
     public List<Space> findAll() {
@@ -86,28 +90,67 @@ public class SpaceService implements ISpaceService {
         space.setDiscount(theSpaceDto.getDiscount());
         space.setRatingAverage(BigDecimal.ZERO);
 
-        SpaceDescription spaceDescription = new SpaceDescription();
-
+        SpaceDescription spaceDescription = mapper.map(theSpaceDto.getSpaceDescriptionDTO(), SpaceDescription.class);
         space.setSpaceDescription(spaceDescription);
 
-        SpaceContact spaceContact = new SpaceContact();
-
+        SpaceContact spaceContact = mapper.map(theSpaceDto.getSpaceContactDTO(), SpaceContact.class);
         space.setSpaceContact(spaceContact);
 
-        SpaceAmenity spaceAmenity = new SpaceAmenity();
-
+        SpaceAmenity spaceAmenity = mapper.map(theSpaceDto.getSpaceAmenityDTO(), SpaceAmenity.class);
         space.setSpaceAmenity(spaceAmenity);
 
-        SpaceAddress spaceAddress = new SpaceAddress();
-
+        SpaceAddress spaceAddress = mapper.map(theSpaceDto.getSpaceAddressDTO(), SpaceAddress.class);
         space.setSpaceAddress(spaceAddress);
 
-        SpaceOperationTime spaceOperationTime = new SpaceOperationTime();
+        Set<SpaceOperationTime> spaceOperationTimes = new HashSet<>();
+        for(SpaceOperationTimeDTO spaceOperationTimeDTO : theSpaceDto.getSpaceOperationTimeDTOs()) {
+            SpaceOperationTime spaceOperationTime = mapper.map(spaceOperationTimeDTO, SpaceOperationTime.class);
+
+            spaceOperationTimes.add(spaceOperationTime);
+        }
+        space.setSpaceOperationTimes(spaceOperationTimes);
+
+        Set<ServiceSpace> serviceSpaces = new HashSet<>();
+        for(ServiceSpaceDTO serviceSpaceDTO : theSpaceDto.getServiceSpaceDTOS()) {
+            ServiceSpace serviceSpace = new ServiceSpace();
+            serviceSpace.setTitle(serviceSpaceDTO.getTitle());
+            serviceSpace.setNote(serviceSpaceDTO.getNote());
+
+            Set<Package> packages = new HashSet<>();
+            for(PackageDTO packageDTO : serviceSpaceDTO.getPackageDTOs()) {
+                Package packageService = mapper.map(packageDTO, Package.class);
+                packageService.setServiceSpace(serviceSpace);
+
+                Set<SubSpace> subSpaces = new HashSet<>();
+                for(SubSpaceDTO subSpaceDTO : packageDTO.getSubSpaceDTOs()) {
+                    SubSpace subSpace = mapper.map(subSpaceDTO, SubSpace.class);
+                    subSpace.setPackageSubSpace(packageService);
+
+                    subSpaces.add(subSpace);
+                }
+
+                packageService.setSubSpaces(subSpaces);
+            }
+            serviceSpace.setPackages(packages);
+
+            serviceSpaces.add(serviceSpace);
+        }
+
+        space.setServiceSpaces(serviceSpaces);
+
+        List<Image> images = new ArrayList<>();
+        for(String imageUrl : theSpaceDto.getImageUrls()) {
+            Image image = new Image();
+            image.setFileName(imageUrl);
+            image.setUrl(imageUrl);
+            image.setSpace(space);
+        }
+        space.setImages(images);
+
+        spaceRepository.save(space);
 
 
-
-
-        return null;
+        return new MessageResponse("Create space successfully!", HttpStatus.OK, LocalDateTime.now());
     }
 
     @Override

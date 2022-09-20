@@ -1,17 +1,14 @@
-package com.datn.coworkingspace.entity;
+package com.datn.coworkingspace.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "sub_space")
-public class SubSpace extends BaseEntity {
+public class SubSpaceDTO {
 
+    @NotNull(message = "Please input title")
     private String title;
 
+    @NotNull(message = "Please input price")
     private BigDecimal price;
 
     private String imageUrl;
@@ -20,13 +17,9 @@ public class SubSpace extends BaseEntity {
 
     private boolean status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "package_id")
-    @JsonIgnoreProperties("subSpaces")
-    @JsonProperty(value = "package")
-    private Package packageSubSpace;
+    private PackageDTO packageSubSpaceDTO;
 
-    public SubSpace() {
+    public SubSpaceDTO() {
     }
 
     public String getTitle() {
@@ -69,7 +62,11 @@ public class SubSpace extends BaseEntity {
         this.status = status;
     }
 
-    public Package getPackageSubSpace() { return packageSubSpace; }
+    public PackageDTO getPackageSubSpaceDTO() {
+        return packageSubSpaceDTO;
+    }
 
-    public void setPackageSubSpace(Package packageSubSpace) { this.packageSubSpace = packageSubSpace; }
+    public void setPackageSubSpaceDTO(PackageDTO packageSubSpaceDTO) {
+        this.packageSubSpaceDTO = packageSubSpaceDTO;
+    }
 }

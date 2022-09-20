@@ -16,7 +16,7 @@ public class ServiceSpace extends BaseEntity {
 
     @OneToMany(mappedBy = "serviceSpace", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnoreProperties("serviceSpace")
-    private Set<SubSpace> subSpaces = new HashSet<>();
+    private Set<Package> packages = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "space_id")
@@ -42,9 +42,9 @@ public class ServiceSpace extends BaseEntity {
         this.note = note;
     }
 
-    public Set<SubSpace> getSubSpaces() { return subSpaces; }
+    public Set<Package> getPackages() { return packages; }
 
-    public void setSubSpaces(Set<SubSpace> subSpaces) { this.subSpaces = subSpaces; }
+    public void setPackages(Set<Package> packages) { this.packages = packages; }
 
     public Space getSpace() {  return space; }
 
