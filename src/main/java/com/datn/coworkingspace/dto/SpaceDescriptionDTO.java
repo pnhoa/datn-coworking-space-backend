@@ -1,13 +1,20 @@
 package com.datn.coworkingspace.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class SpaceDescriptionDTO {
 
+    @NotNull(message = "Please input opening date")
     private Date openingDate;
 
+    @NotNull(message = "Please input short description")
+    @Size(min = 50)
     private String shortDescription;
 
+    @NotNull(message = "Please input description")
+    @Size(min = 300)
     private String description;
 
 

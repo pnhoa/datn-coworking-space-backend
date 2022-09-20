@@ -1,20 +1,27 @@
 package com.datn.coworkingspace.dto;
 
 
+import javax.validation.constraints.NotNull;
+
 public class SpaceAddressDTO {
 
+    @NotNull(message = "Please input location name")
     private String locationName;
 
+    @NotNull(message = "Please input address")
     private String addressLine1;
 
     private String addressLine2;
 
     private String floorNumber;
 
+    @NotNull(message = "Please input country")
     private String country;
 
+    @NotNull(message = "Please input province")
     private String province;
 
+    @NotNull(message = "Please input district")
     private String district;
 
     private String subDistrict;

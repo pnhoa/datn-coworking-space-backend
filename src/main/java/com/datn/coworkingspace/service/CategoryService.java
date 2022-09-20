@@ -42,6 +42,11 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    public Optional<Category> findByIdOptional(Long theId) {
+        return categoryRepository.findById(theId);
+    }
+
+    @Override
     public MessageResponse createCategory(CategoryDTO theCategoryDto) {
 
         Category theCategory = new Category();

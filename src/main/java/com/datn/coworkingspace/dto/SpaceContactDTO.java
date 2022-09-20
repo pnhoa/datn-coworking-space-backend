@@ -7,6 +7,7 @@ public class SpaceContactDTO {
     @NotNull(message = "Please enter email")
     private String email;
 
+    @NotNull(message = "Please input phone number")
     private String phone;
 
     private String websiteUrl;

@@ -67,9 +67,9 @@ public class Space extends BaseEntity {
     @JoinColumn(name = "space_address_id")
     private SpaceAddress spaceAddress;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "space_operation_time_id")
-    private SpaceOperationTime spaceOperationTime;
+    @OneToMany(mappedBy = "space", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("space")
+    private Set<SpaceOperationTime> spaceOperationTimes;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
@@ -297,11 +297,7 @@ public class Space extends BaseEntity {
         this.spaceAddress = spaceAddress;
     }
 
-    public SpaceOperationTime getSpaceOperationTime() {
-        return spaceOperationTime;
-    }
+    public Set<SpaceOperationTime> getSpaceOperationTimes() {return spaceOperationTimes; }
 
-    public void setSpaceOperationTime(SpaceOperationTime spaceOperationTime) {
-        this.spaceOperationTime = spaceOperationTime;
-    }
+    public void setSpaceOperationTimes(Set<SpaceOperationTime> spaceOperationTimes) {this.spaceOperationTimes = spaceOperationTimes; }
 }

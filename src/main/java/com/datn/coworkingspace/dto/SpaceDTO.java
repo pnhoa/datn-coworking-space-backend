@@ -18,6 +18,7 @@ public class SpaceDTO extends AbstractDTO {
     @NotNull(message = "Please enter price")
     private BigDecimal price;
 
+    @NotNull(message = "Please upload large image")
     private String largeImage;
 
     private BigDecimal minPrice;
@@ -54,7 +55,7 @@ public class SpaceDTO extends AbstractDTO {
 
     private SpaceAddressDTO spaceAddressDTO;
 
-    private SpaceOperationTime spaceOperationTime;
+    private List<SpaceOperationTime> spaceOperationTimes;
 
     private List<String> imageUrls;
 
@@ -62,6 +63,7 @@ public class SpaceDTO extends AbstractDTO {
 
     private Category category;
 
+    @NotNull(message = "Please input user id")
     private Long userId;
 
 
@@ -228,13 +230,9 @@ public class SpaceDTO extends AbstractDTO {
         this.spaceAddressDTO = spaceAddressDTO;
     }
 
-    public SpaceOperationTime getSpaceOperationTime() {
-        return spaceOperationTime;
-    }
+    public List<SpaceOperationTime> getSpaceOperationTimes() { return spaceOperationTimes; }
 
-    public void setSpaceOperationTime(SpaceOperationTime spaceOperationTime) {
-        this.spaceOperationTime = spaceOperationTime;
-    }
+    public void setSpaceOperationTimes(List<SpaceOperationTime> spaceOperationTimes) { this.spaceOperationTimes = spaceOperationTimes; }
 
     public List<String> getImageUrls() {
         return imageUrls;
