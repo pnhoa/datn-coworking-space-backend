@@ -65,7 +65,7 @@ public class SpaceDTO extends AbstractDTO {
 
     private List<CommentDTO> commentDTOs;
 
-    private List<ServiceSpaceDTO> serviceSpaceDTOS;
+    private List<ServiceSpaceDTO> serviceSpaceDTOs;
 
     @NotNull(message = "Please input user id")
     private Long userId;
@@ -262,13 +262,9 @@ public class SpaceDTO extends AbstractDTO {
         this.commentDTOs = commentDTOs;
     }
 
-    public List<ServiceSpaceDTO> getServiceSpaceDTOS() {
-        return serviceSpaceDTOS;
-    }
+    public List<ServiceSpaceDTO> getServiceSpaceDTOs() { return serviceSpaceDTOs; }
 
-    public void setServiceSpaceDTOS(List<ServiceSpaceDTO> serviceSpaceDTOS) {
-        this.serviceSpaceDTOS = serviceSpaceDTOS;
-    }
+    public void setServiceSpaceDTOs(List<ServiceSpaceDTO> serviceSpaceDTOs) { this.serviceSpaceDTOs = serviceSpaceDTOs; }
 
     public Long getUserId() {
         return userId;

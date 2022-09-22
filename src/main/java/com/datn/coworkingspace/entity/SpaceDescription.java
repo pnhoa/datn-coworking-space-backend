@@ -14,8 +14,10 @@ public class SpaceDescription {
 
     private Date openingDate;
 
+    @Column(columnDefinition = "TEXT")
     private String shortDescription;
 
+    @Lob
     private String description;
 
     @OneToOne(cascade = CascadeType.ALL,

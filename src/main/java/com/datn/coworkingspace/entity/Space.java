@@ -51,19 +51,19 @@ public class Space extends BaseEntity {
     @Column(name = "rating_average")
     private BigDecimal ratingAverage;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "space_description_id")
     private SpaceDescription spaceDescription;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "space_contact_id")
     private SpaceContact spaceContact;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "space_amenity_id")
     private SpaceAmenity spaceAmenity;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
     @JoinColumn(name = "space_address_id")
     private SpaceAddress spaceAddress;
 

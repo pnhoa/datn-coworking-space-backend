@@ -3,6 +3,7 @@ package com.datn.coworkingspace.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -16,9 +17,11 @@ public class SpaceOperationTime {
 
     private Integer day;
 
-    private Date openTime;
+    @Column(nullable= false, precision=4, scale=0)
+    private BigDecimal openTime;
 
-    private Date closeTime;
+    @Column(nullable= false, precision=4, scale=0)
+    private BigDecimal closeTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "space_id")
@@ -44,19 +47,19 @@ public class SpaceOperationTime {
         this.day = day;
     }
 
-    public Date getOpenTime() {
+    public BigDecimal getOpenTime() {
         return openTime;
     }
 
-    public void setOpenTime(Date openTime) {
+    public void setOpenTime(BigDecimal openTime) {
         this.openTime = openTime;
     }
 
-    public Date getCloseTime() {
+    public BigDecimal getCloseTime() {
         return closeTime;
     }
 
-    public void setCloseTime(Date closeTime) {
+    public void setCloseTime(BigDecimal closeTime) {
         this.closeTime = closeTime;
     }
 

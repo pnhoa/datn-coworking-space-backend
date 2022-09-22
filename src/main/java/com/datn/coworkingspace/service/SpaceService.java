@@ -4,6 +4,7 @@ import com.datn.coworkingspace.dto.*;
 import com.datn.coworkingspace.entity.*;
 import com.datn.coworkingspace.entity.Package;
 import com.datn.coworkingspace.exception.ResourceNotFoundException;
+import com.datn.coworkingspace.mapper.SpaceMapper;
 import com.datn.coworkingspace.repository.SpaceRepository;
 import com.datn.coworkingspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -59,6 +61,7 @@ public class SpaceService implements ISpaceService {
     }
 
     @Override
+    @Transactional
     public MessageResponse createSpace(SpaceDTO theSpaceDto)  {
 
         Optional<User> user = userRepository.findByIdCustomer(theSpaceDto.getUserId());
@@ -89,63 +92,106 @@ public class SpaceService implements ISpaceService {
         space.setyCoordinate(theSpaceDto.getyCoordinate());
         space.setDiscount(theSpaceDto.getDiscount());
         space.setRatingAverage(BigDecimal.ZERO);
+        space.setCreatedBy(user.get().getName());
+        space.setCreatedDate(new Date());
 
-        SpaceDescription spaceDescription = mapper.map(theSpaceDto.getSpaceDescriptionDTO(), SpaceDescription.class);
-        space.setSpaceDescription(spaceDescription);
-
-        SpaceContact spaceContact = mapper.map(theSpaceDto.getSpaceContactDTO(), SpaceContact.class);
-        space.setSpaceContact(spaceContact);
-
-        SpaceAmenity spaceAmenity = mapper.map(theSpaceDto.getSpaceAmenityDTO(), SpaceAmenity.class);
-        space.setSpaceAmenity(spaceAmenity);
-
-        SpaceAddress spaceAddress = mapper.map(theSpaceDto.getSpaceAddressDTO(), SpaceAddress.class);
-        space.setSpaceAddress(spaceAddress);
-
-        Set<SpaceOperationTime> spaceOperationTimes = new HashSet<>();
-        for(SpaceOperationTimeDTO spaceOperationTimeDTO : theSpaceDto.getSpaceOperationTimeDTOs()) {
-            SpaceOperationTime spaceOperationTime = mapper.map(spaceOperationTimeDTO, SpaceOperationTime.class);
-
-            spaceOperationTimes.add(spaceOperationTime);
+        if(theSpaceDto.getSpaceDescriptionDTO() != null) {
+            SpaceDescription spaceDescription = mapper.map(theSpaceDto.getSpaceDescriptionDTO(), SpaceDescription.class);
+            spaceDescription.setSpace(space);
+            space.setSpaceDescription(spaceDescription);
         }
-        space.setSpaceOperationTimes(spaceOperationTimes);
 
-        Set<ServiceSpace> serviceSpaces = new HashSet<>();
-        for(ServiceSpaceDTO serviceSpaceDTO : theSpaceDto.getServiceSpaceDTOS()) {
-            ServiceSpace serviceSpace = new ServiceSpace();
-            serviceSpace.setTitle(serviceSpaceDTO.getTitle());
-            serviceSpace.setNote(serviceSpaceDTO.getNote());
+        if(theSpaceDto.getSpaceContactDTO() != null) {
+            SpaceContact spaceContact = mapper.map(theSpaceDto.getSpaceContactDTO(), SpaceContact.class);
+            spaceContact.setSpace(space);
+            space.setSpaceContact(spaceContact);
+        }
 
-            Set<Package> packages = new HashSet<>();
-            for(PackageDTO packageDTO : serviceSpaceDTO.getPackageDTOs()) {
-                Package packageService = mapper.map(packageDTO, Package.class);
-                packageService.setServiceSpace(serviceSpace);
+        if(theSpaceDto.getSpaceAmenityDTO() != null) {
+            SpaceAmenity spaceAmenity = mapper.map(theSpaceDto.getSpaceAmenityDTO(), SpaceAmenity.class);
+            spaceAmenity.setSpace(space);
+            space.setSpaceAmenity(spaceAmenity);
+        }
 
-                Set<SubSpace> subSpaces = new HashSet<>();
-                for(SubSpaceDTO subSpaceDTO : packageDTO.getSubSpaceDTOs()) {
-                    SubSpace subSpace = mapper.map(subSpaceDTO, SubSpace.class);
-                    subSpace.setPackageSubSpace(packageService);
+        if(theSpaceDto.getSpaceAddressDTO() != null) {
+            SpaceAddressDTO spaceAddressDTO = theSpaceDto.getSpaceAddressDTO();
 
-                    subSpaces.add(subSpace);
+            SpaceAddress spaceAddress = SpaceMapper.getSpaceAddress(spaceAddressDTO);
+            spaceAddress.setSpace(space);
+            space.setSpaceAddress(spaceAddress);
+        }
+
+        if(!CollectionUtils.isEmpty(theSpaceDto.getSpaceOperationTimeDTOs())) {
+            Set<SpaceOperationTime> spaceOperationTimes = new HashSet<>();
+            for(SpaceOperationTimeDTO spaceOperationTimeDTO : theSpaceDto.getSpaceOperationTimeDTOs()) {
+                SpaceOperationTime spaceOperationTime = mapper.map(spaceOperationTimeDTO, SpaceOperationTime.class);
+
+                spaceOperationTimes.add(spaceOperationTime);
+            }
+            space.setSpaceOperationTimes(spaceOperationTimes);
+        }
+
+        if(!CollectionUtils.isEmpty(theSpaceDto.getServiceSpaceDTOs())) {
+            Set<ServiceSpace> serviceSpaces = new HashSet<>();
+            for(ServiceSpaceDTO serviceSpaceDTO : theSpaceDto.getServiceSpaceDTOs()) {
+                ServiceSpace serviceSpace = new ServiceSpace();
+
+                serviceSpace.setTitle(serviceSpaceDTO.getTitle());
+                serviceSpace.setNote(serviceSpaceDTO.getNote());
+
+                if(!CollectionUtils.isEmpty(serviceSpaceDTO.getPackageDTOs())) {
+                    Set<Package> packages = new HashSet<>();
+                    for(PackageDTO packageDTO : serviceSpaceDTO.getPackageDTOs()) {
+                        Package packageService = new Package();
+
+                        packageService.setType(packageDTO.getType());
+                        packageService.setNote(packageDTO.getNote());
+
+                        if(!CollectionUtils.isEmpty(packageDTO.getSubSpaceDTOs())) {
+                            Set<SubSpace> subSpaces = new HashSet<>();
+                            for(SubSpaceDTO subSpaceDTO : packageDTO.getSubSpaceDTOs()) {
+                                SubSpace subSpace = new SubSpace();
+
+                                subSpace.setTitle(subSpaceDTO.getTitle());
+                                subSpace.setPrice(subSpaceDTO.getPrice());
+                                subSpace.setImageUrl(subSpaceDTO.getImageUrl());
+                                subSpace.setNumberOfPeople(subSpaceDTO.getNumberOfPeople());
+                                subSpace.setStatus(subSpaceDTO.isStatus());
+                                subSpace.setPackageSubSpace(packageService);
+
+                                subSpaces.add(subSpace);
+                            }
+
+                        packageService.setSubSpaces(subSpaces);
+                        packageService.setServiceSpace(serviceSpace);
+
+                        packages.add(packageService);
+                        }
+
+                    }
+                serviceSpace.setPackages(packages);
+                serviceSpace.setSpace(space);
+
+                serviceSpaces.add(serviceSpace);
                 }
 
-                packageService.setSubSpaces(subSpaces);
             }
-            serviceSpace.setPackages(packages);
 
-            serviceSpaces.add(serviceSpace);
+            space.setServiceSpaces(serviceSpaces);
         }
 
-        space.setServiceSpaces(serviceSpaces);
+        if(!CollectionUtils.isEmpty(theSpaceDto.getImageUrls())) {
+            List<Image> images = new ArrayList<>();
+            for(String imageUrl : theSpaceDto.getImageUrls()) {
+                Image image = new Image();
+                image.setFileName(imageUrl);
+                image.setUrl(imageUrl);
+                image.setSpace(space);
 
-        List<Image> images = new ArrayList<>();
-        for(String imageUrl : theSpaceDto.getImageUrls()) {
-            Image image = new Image();
-            image.setFileName(imageUrl);
-            image.setUrl(imageUrl);
-            image.setSpace(space);
+                images.add(image);
+            }
+            space.setImages(images);
         }
-        space.setImages(images);
 
         spaceRepository.save(space);
 

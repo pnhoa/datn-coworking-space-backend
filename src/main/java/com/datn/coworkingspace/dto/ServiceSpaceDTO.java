@@ -12,7 +12,7 @@ public class ServiceSpaceDTO {
 
     private String note;
 
-    private Space space;
+    private SpaceDTO spaceDTO;
 
     private List<PackageDTO> packageDTOs;
 
@@ -35,13 +35,9 @@ public class ServiceSpaceDTO {
         this.note = note;
     }
 
-    public Space getSpace() {
-        return space;
-    }
+    public SpaceDTO getSpaceDTO() { return spaceDTO; }
 
-    public void setSpace(Space space) {
-        this.space = space;
-    }
+    public void setSpaceDTO(SpaceDTO spaceDTO) { this.spaceDTO = spaceDTO; }
 
     public List<PackageDTO> getPackageDTOs() { return packageDTOs; }
 
