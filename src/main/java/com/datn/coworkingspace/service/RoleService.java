@@ -67,8 +67,4 @@ public class RoleService implements IRoleService{
         return new MessageResponse("Update role successfully!", HttpStatus.CREATED, LocalDateTime.now());
     }
 
-    @Override
-    public void deleteProduct(Long theId) {
-
-    }
 }
