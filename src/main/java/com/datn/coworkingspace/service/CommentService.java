@@ -5,6 +5,7 @@ import com.datn.coworkingspace.dto.CommentDTO;
 import com.datn.coworkingspace.dto.MessageResponse;
 import com.datn.coworkingspace.entity.Comment;
 import com.datn.coworkingspace.entity.Space;
+import com.datn.coworkingspace.entity.User;
 import com.datn.coworkingspace.exception.ResourceNotFoundException;
 import com.datn.coworkingspace.repository.CommentRepository;
 import com.datn.coworkingspace.repository.SpaceRepository;
@@ -44,13 +45,14 @@ public class CommentService implements ICommentService {
         Comment theComment = new Comment();
 
         Space space = spaceService.findById(theCommentDTO.getSpaceId());
+        User user = customerService.findByIdCustomer(theCommentDTO.getUserId());
 
         theComment.setContent(theCommentDTO.getContent());
         theComment.setRate(theCommentDTO.getRate());
-        theComment.setUser(customerService.findByIdCustomer(theCommentDTO.getUserId()));
+        theComment.setUser(user);
         theComment.setSpace(space);
         theComment.setCreatedDate(new Date());
-        theComment.setCreatedBy("");
+        theComment.setCreatedBy(user.getName());
 
         commentRepository.save((theComment));
         updateRatingAverage(theCommentDTO, space);
