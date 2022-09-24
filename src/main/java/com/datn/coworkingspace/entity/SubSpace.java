@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "sub_space")
+@JsonIgnoreProperties({"packageSubSpace"})
 public class SubSpace extends BaseEntity {
 
     private String title;

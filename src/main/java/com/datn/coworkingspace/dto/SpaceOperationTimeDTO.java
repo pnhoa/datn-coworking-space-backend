@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 
 public class SpaceOperationTimeDTO {
 
+    private Long id;
+
     @Min(0)
     @Max(6)
     private Integer day;
@@ -17,6 +19,10 @@ public class SpaceOperationTimeDTO {
 
     public SpaceOperationTimeDTO() {
     }
+
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
 
     public Integer getDay() {
         return day;

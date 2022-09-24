@@ -1,9 +1,12 @@
 package com.datn.coworkingspace.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name= "image")
+@JsonIgnoreProperties({"space"})
 public class Image extends BaseEntity {
 
     private String fileName;

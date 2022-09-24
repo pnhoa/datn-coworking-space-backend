@@ -12,7 +12,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "space")
-@JsonIgnoreProperties({"category"})
+@JsonIgnoreProperties({"category", "user"})
 public class Space extends BaseEntity {
 
     private String name;
@@ -41,6 +41,8 @@ public class Space extends BaseEntity {
 
     private boolean approved;
 
+    private boolean notApproved;
+
     private double xCoordinate;
 
     private double yCoordinate;
@@ -51,23 +53,23 @@ public class Space extends BaseEntity {
     @Column(name = "rating_average")
     private BigDecimal ratingAverage;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinColumn(name = "space_description_id")
     private SpaceDescription spaceDescription;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinColumn(name = "space_contact_id")
     private SpaceContact spaceContact;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinColumn(name = "space_amenity_id")
     private SpaceAmenity spaceAmenity;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+    @OneToOne(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
     @JoinColumn(name = "space_address_id")
     private SpaceAddress spaceAddress;
 
-    @OneToMany(mappedBy = "space", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "space", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     @JsonIgnoreProperties("space")
     private Set<SpaceOperationTime> spaceOperationTimes;
 
@@ -97,6 +99,30 @@ public class Space extends BaseEntity {
     @Transient
     @JsonProperty(value = "categoryId")
     private Long categoryIds;
+
+    @Transient
+    @JsonProperty(value = "userId")
+    private Long userIds;
+
+    @Transient
+    @JsonProperty(value = "spaceDescriptionId")
+    private Long spaceDescriptionIds;
+
+    @Transient
+    @JsonProperty(value = "spaceContactId")
+    private Long spaceContactIds;
+
+    @Transient
+    @JsonProperty(value = "spaceAddressId")
+    private Long spaceAddressIds;
+
+    @Transient
+    @JsonProperty(value = "spaceAmenityId")
+    private Long spaceAmenityIds;
+
+    @Transient
+    @JsonProperty(value = "spaceOperationTimeIds")
+    private List<Long> spaceOperationTimeIds;
 
     public Space() {
     }
@@ -300,4 +326,32 @@ public class Space extends BaseEntity {
     public Set<SpaceOperationTime> getSpaceOperationTimes() {return spaceOperationTimes; }
 
     public void setSpaceOperationTimes(Set<SpaceOperationTime> spaceOperationTimes) {this.spaceOperationTimes = spaceOperationTimes; }
+
+    public Long getSpaceDescriptionIds() { return spaceDescriptionIds; }
+
+    public void setSpaceDescriptionIds(Long spaceDescriptionIds) { this.spaceDescriptionIds = spaceDescriptionIds; }
+
+    public Long getSpaceContactIds() { return spaceContactIds; }
+
+    public void setSpaceContactIds(Long spaceContactIds) { this.spaceContactIds = spaceContactIds; }
+
+    public Long getSpaceAddressIds() { return spaceAddressIds; }
+
+    public void setSpaceAddressIds(Long spaceAddressIds) { this.spaceAddressIds = spaceAddressIds; }
+
+    public Long getSpaceAmenityIds() { return spaceAmenityIds; }
+
+    public void setSpaceAmenityIds(Long spaceAmenityIds) { this.spaceAmenityIds = spaceAmenityIds; }
+
+    public List<Long> getSpaceOperationTimeIds() { return spaceOperationTimeIds; }
+
+    public void setSpaceOperationTimeIds(List<Long> spaceOperationTimeIds) { this.spaceOperationTimeIds = spaceOperationTimeIds; }
+
+    public Long getUserIds() { return userIds; }
+
+    public void setUserIds(Long userIds) { this.userIds = userIds; }
+
+    public boolean isNotApproved() { return notApproved; }
+
+    public void setNotApproved(boolean notApproved) { this.notApproved = notApproved; }
 }

@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "package")
+@JsonIgnoreProperties({"serviceSpace"})
 public class Package extends BaseEntity {
 
     // package of space (Day, Month,....)

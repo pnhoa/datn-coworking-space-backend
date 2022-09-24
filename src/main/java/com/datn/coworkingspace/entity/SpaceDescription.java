@@ -1,10 +1,13 @@
 package com.datn.coworkingspace.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "space_description")
+@JsonIgnoreProperties({"space"})
 public class SpaceDescription {
 
     @Id
@@ -12,12 +15,13 @@ public class SpaceDescription {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Temporal(TemporalType.DATE)
     private Date openingDate;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", length = 1000)
     private String shortDescription;
 
-    @Lob
+    @Column(columnDefinition = "TEXT", length = 2000)
     private String description;
 
     @OneToOne(cascade = CascadeType.ALL,

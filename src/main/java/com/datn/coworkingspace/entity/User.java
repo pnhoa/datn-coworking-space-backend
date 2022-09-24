@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "users", uniqueConstraints =
         {@UniqueConstraint(columnNames = "userName"),
          @UniqueConstraint(columnNames = "email")})
-@JsonIgnoreProperties({"roles", "password", "feedbacks", "accCustomer", "provider", "providerId"})
+@JsonIgnoreProperties({"roles", "password", "feedbacks", "accCustomer", "provider", "providerId", "spaces"})
 public class User extends BaseEntity{
 
     @Column(name = "username")

@@ -1,9 +1,12 @@
 package com.datn.coworkingspace.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "space_address")
+@JsonIgnoreProperties({"space"})
 public class SpaceAddress {
 
     @Id

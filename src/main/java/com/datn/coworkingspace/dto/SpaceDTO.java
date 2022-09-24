@@ -37,6 +37,8 @@ public class SpaceDTO extends AbstractDTO {
 
     private boolean approved;
 
+    private boolean notApproved;
+
     private double xCoordinate;
 
     private double yCoordinate;
@@ -273,6 +275,10 @@ public class SpaceDTO extends AbstractDTO {
     public void setUserId(Long userId) {
         this.userId = userId;
     }
+
+    public boolean isNotApproved() { return notApproved; }
+
+    public void setNotApproved(boolean notApproved) { this.notApproved = notApproved; }
 
     public SpaceDTO() {
     }

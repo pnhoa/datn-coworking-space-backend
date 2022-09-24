@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "service_space")
+@JsonIgnoreProperties({"space"})
 public class ServiceSpace extends BaseEntity {
     // service of space
     private String title;

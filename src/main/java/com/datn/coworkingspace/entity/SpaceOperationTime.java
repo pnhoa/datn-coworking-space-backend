@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Entity
 @Table(name = "space_operation_time")
+@JsonIgnoreProperties({"space"})
 public class SpaceOperationTime {
 
     @Id

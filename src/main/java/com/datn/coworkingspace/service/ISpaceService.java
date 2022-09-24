@@ -1,7 +1,6 @@
 package com.datn.coworkingspace.service;
 
-import com.datn.coworkingspace.dto.MessageResponse;
-import com.datn.coworkingspace.dto.SpaceDTO;
+import com.datn.coworkingspace.dto.*;
 import com.datn.coworkingspace.entity.Space;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +19,16 @@ public interface ISpaceService {
 
     MessageResponse updateSpace(Long theId, SpaceDTO theSpaceDto);
 
+    MessageResponse updateSpaceDescription(Long id, SpaceDescriptionDTO spaceDescriptionDTO);
+
+    MessageResponse updateSpaceAddress(Long id, SpaceAddressDTO spaceAddressDTO);
+
+    MessageResponse updateSpaceContact(Long id, SpaceContactDTO spaceContactDTO);
+
+    MessageResponse updateSpaceAmenity(Long id, SpaceAmenityDTO spaceAmenityDTO);
+
+    MessageResponse updateSpaceOperationTimes(Long spaceId, List<SpaceOperationTimeDTO> spaceOperationTimeDTOs);
+
     void deleteSpace(Long theId);
 
     Page<Space> findByNameContaining(String spaceName, Pageable pagingSort);
@@ -28,4 +37,11 @@ public interface ISpaceService {
 
     Long countSpacesByCategoryId(Long theCategoryId);
 
+    Page<SpaceOverviewDTO> findAllOverviewPageAndSort(Pageable pagingSort);
+
+    Page<SpaceOverviewDTO> findBySearchContentOverviewContaining(String spaceName, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean status, Pageable pagingSort);
+
+    MessageResponse approveSpace(Long spaceId, Long userId, boolean isApproved);
+
+    MessageResponse hideSpace(Long spaceId, Long userId, boolean isHidden);
 }
