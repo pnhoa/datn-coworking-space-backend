@@ -18,6 +18,9 @@ public class SpaceDTO extends AbstractDTO {
     @NotNull(message = "Please enter price")
     private BigDecimal price;
 
+    @NotNull(message = "Please enter unit(day/month/...)")
+    private String unit;
+
     @NotNull(message = "Please upload large image")
     private String largeImage;
 
@@ -279,6 +282,10 @@ public class SpaceDTO extends AbstractDTO {
     public boolean isNotApproved() { return notApproved; }
 
     public void setNotApproved(boolean notApproved) { this.notApproved = notApproved; }
+
+    public String getUnit() { return unit; }
+
+    public void setUnit(String unit) { this.unit = unit; }
 
     public SpaceDTO() {
     }

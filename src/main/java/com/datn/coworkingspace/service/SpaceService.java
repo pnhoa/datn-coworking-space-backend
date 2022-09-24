@@ -97,6 +97,7 @@ public class SpaceService implements ISpaceService {
         space.setCategory(category.get());
         space.setName(theSpaceDto.getName());
         space.setPrice(theSpaceDto.getPrice());
+        space.setUnit(theSpaceDto.getUnit());
         space.setLargeImage(theSpaceDto.getLargeImage());
         space.setMinPrice(theSpaceDto.getMinPrice());
         space.setMaxPrice(theSpaceDto.getMaxPrice());
@@ -227,6 +228,7 @@ public class SpaceService implements ISpaceService {
         }
         space.get().setName(theSpaceDto.getName());
         space.get().setPrice(theSpaceDto.getPrice());
+        space.get().setUnit(theSpaceDto.getUnit());
         space.get().setLargeImage(theSpaceDto.getLargeImage());
         space.get().setMinPrice(theSpaceDto.getMinPrice());
         space.get().setMaxPrice(theSpaceDto.getMaxPrice());
@@ -457,6 +459,7 @@ public class SpaceService implements ISpaceService {
         spaceDTO.setId(space.getId());
         spaceDTO.setName(space.getName());
         spaceDTO.setPrice(space.getPrice());
+        spaceDTO.setUnit(space.getUnit());
         spaceDTO.setLargeImage(space.getLargeImage());
         spaceDTO.setAddress(space.getSpaceAddress().getAddressLine1());
         spaceDTO.setCountry(space.getSpaceAddress().getCountry());
