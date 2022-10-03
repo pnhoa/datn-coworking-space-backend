@@ -20,6 +20,9 @@ public class Space extends BaseEntity {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "unit")
+    private String unit;
+
     private String largeImage;
 
     @Column(name = "min_price")
@@ -354,4 +357,8 @@ public class Space extends BaseEntity {
     public boolean isNotApproved() { return notApproved; }
 
     public void setNotApproved(boolean notApproved) { this.notApproved = notApproved; }
+
+    public String getUnit() { return unit; }
+
+    public void setUnit(String unit) { this.unit = unit; }
 }

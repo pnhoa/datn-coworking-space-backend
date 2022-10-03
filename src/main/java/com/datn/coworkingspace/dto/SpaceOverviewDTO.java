@@ -11,6 +11,8 @@ public class SpaceOverviewDTO {
 
     private BigDecimal price;
 
+    private String unit;
+
     private String largeImage;
 
     private BigDecimal ratingAverage;
@@ -90,6 +92,11 @@ public class SpaceOverviewDTO {
     public void setId(Long id) {
         this.id = id;
     }
+
+
+    public String getUnit() { return unit; }
+
+    public void setUnit(String unit) { this.unit = unit; }
 
     public SpaceOverviewDTO() {
     }
