@@ -466,6 +466,12 @@ public class SpaceService implements ISpaceService {
         spaceDTO.setProvince(space.getSpaceAddress().getProvince());
         spaceDTO.setDistrict(space.getSpaceAddress().getDistrict());
         spaceDTO.setRatingAverage(space.getRatingAverage());
+        spaceDTO.setCategoryId(space.getCategory().getId());
+        spaceDTO.setStatus(space.isStatus());
+        spaceDTO.setApproved(space.isApproved());
+        spaceDTO.setNotApproved(space.isNotApproved());
+        spaceDTO.setNumberOfRoom(space.getNumberOfRoom());
+        spaceDTO.setUserId(space.getUser().getId());
 
         return spaceDTO;
     }

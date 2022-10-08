@@ -25,6 +25,18 @@ public class SpaceOverviewDTO {
 
     private String district;
 
+    private Long categoryId;
+
+    private Integer numberOfRoom;
+
+    private boolean status;
+
+    private boolean approved;
+
+    private boolean notApproved;
+
+    private Long userId;
+
     public String getName() {
         return name;
     }
@@ -97,6 +109,30 @@ public class SpaceOverviewDTO {
     public String getUnit() { return unit; }
 
     public void setUnit(String unit) { this.unit = unit; }
+
+    public Long getCategoryId() { return categoryId; }
+
+    public void setCategoryId(Long categoryId) { this.categoryId = categoryId; }
+
+    public Integer getNumberOfRoom() { return numberOfRoom; }
+
+    public void setNumberOfRoom(Integer numberOfRoom) { this.numberOfRoom = numberOfRoom; }
+
+    public boolean isStatus() { return status; }
+
+    public void setStatus(boolean status) { this.status = status; }
+
+    public boolean isApproved() { return approved; }
+
+    public void setApproved(boolean approved) { this.approved = approved; }
+
+    public boolean isNotApproved() { return notApproved; }
+
+    public void setNotApproved(boolean notApproved) { this.notApproved = notApproved; }
+
+    public Long getUserId() { return userId; }
+
+    public void setUserId(Long userId) { this.userId = userId; }
 
     public SpaceOverviewDTO() {
     }
