@@ -179,15 +179,9 @@ public class SpaceAPI {
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
 
-    @PutMapping("/hide/{id}/{userId}")
-    public ResponseEntity<?> hideSpace(@PathVariable("id") Long spaceId, @PathVariable("userId") Long userId) {
-        MessageResponse messageResponse = spaceService.hideSpace(spaceId, userId, true);
-        return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
-    }
-
-    @PutMapping("/unhidden/{id}/{userId}")
-    public ResponseEntity<?> unhiddenSpace(@PathVariable("id") Long spaceId, @PathVariable("userId") Long userId) {
-        MessageResponse messageResponse = spaceService.hideSpace(spaceId, userId, false);
+    @PutMapping("/hide/{id}/{userId}/{bool}")
+    public ResponseEntity<?> hideSpace(@PathVariable("id") Long spaceId, @PathVariable("userId") Long userId, @PathVariable("bool") boolean bool) {
+        MessageResponse messageResponse = spaceService.hideSpace(spaceId, userId, bool);
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
 

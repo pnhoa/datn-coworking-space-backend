@@ -421,7 +421,7 @@ public class SpaceService implements ISpaceService {
         if(!space.isPresent()) {
             return new MessageResponse("Not found space with ID=" + spaceId, HttpStatus.NOT_FOUND, LocalDateTime.now());
         }
-        if(!(space.get().isApproved() == false && space.get().isNotApproved() == false)) {
+        if(space.get().isApproved() == true) {
             return new MessageResponse("Space has been processed before.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
         }
         if(isApproved) {
