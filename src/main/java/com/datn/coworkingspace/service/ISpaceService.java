@@ -44,4 +44,10 @@ public interface ISpaceService {
     MessageResponse approveSpace(Long spaceId, Long userId, boolean isApproved);
 
     MessageResponse hideSpace(Long spaceId, Long userId, boolean isHidden);
+
+    List<String> getAllCountries();
+
+    List<String> getAllProvinces();
+
+    List<String> getAllDistricts();
 }

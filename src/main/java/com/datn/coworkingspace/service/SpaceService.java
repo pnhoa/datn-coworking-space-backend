@@ -421,7 +421,7 @@ public class SpaceService implements ISpaceService {
         if(!space.isPresent()) {
             return new MessageResponse("Not found space with ID=" + spaceId, HttpStatus.NOT_FOUND, LocalDateTime.now());
         }
-        if(!(space.get().isApproved() == false && space.get().isNotApproved() == false)) {
+        if(space.get().isApproved() == true) {
             return new MessageResponse("Space has been processed before.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
         }
         if(isApproved) {
@@ -451,6 +451,21 @@ public class SpaceService implements ISpaceService {
         space.get().setModifiedDate(new Date());
         spaceRepository.save(space.get());
         return new MessageResponse(MessageFormat.format("Space has been {0} successfully.", isHidden ? "hidden" : "unhidden"), HttpStatus.OK, LocalDateTime.now());
+    }
+
+    @Override
+    public List<String> getAllCountries() {
+        return spaceAddressRepository.getAllCountries();
+    }
+
+    @Override
+    public List<String> getAllProvinces() {
+        return spaceAddressRepository.getAllProvinces();
+    }
+
+    @Override
+    public List<String> getAllDistricts() {
+        return spaceAddressRepository.getAllDistricts();
     }
 
 

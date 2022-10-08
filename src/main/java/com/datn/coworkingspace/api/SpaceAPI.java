@@ -179,15 +179,30 @@ public class SpaceAPI {
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
 
-    @PutMapping("/hide/{id}/{userId}")
-    public ResponseEntity<?> hideSpace(@PathVariable("id") Long spaceId, @PathVariable("userId") Long userId) {
-        MessageResponse messageResponse = spaceService.hideSpace(spaceId, userId, true);
+    @PutMapping("/hide/{id}/{userId}/{bool}")
+    public ResponseEntity<?> hideSpace(@PathVariable("id") Long spaceId, @PathVariable("userId") Long userId, @PathVariable("bool") boolean bool) {
+        MessageResponse messageResponse = spaceService.hideSpace(spaceId, userId, bool);
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
 
-    @PutMapping("/unhidden/{id}/{userId}")
-    public ResponseEntity<?> unhiddenSpace(@PathVariable("id") Long spaceId, @PathVariable("userId") Long userId) {
-        MessageResponse messageResponse = spaceService.hideSpace(spaceId, userId, false);
-        return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+    @GetMapping("/countries")
+    public ResponseEntity<?> findAllCountries(){
+
+        List<String> countries = spaceService.getAllCountries();
+        return new ResponseEntity<>(countries, HttpStatus.OK);
+    }
+
+    @GetMapping("/provinces")
+    public ResponseEntity<?> findAllProvinces(){
+
+        List<String> provinces = spaceService.getAllProvinces();
+        return new ResponseEntity<>(provinces, HttpStatus.OK);
+    }
+
+    @GetMapping("/districts")
+    public ResponseEntity<?> findAllDistricts(){
+
+        List<String> districts = spaceService.getAllDistricts();
+        return new ResponseEntity<>(districts, HttpStatus.OK);
     }
 }
