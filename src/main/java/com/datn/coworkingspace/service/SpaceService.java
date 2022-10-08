@@ -453,6 +453,21 @@ public class SpaceService implements ISpaceService {
         return new MessageResponse(MessageFormat.format("Space has been {0} successfully.", isHidden ? "hidden" : "unhidden"), HttpStatus.OK, LocalDateTime.now());
     }
 
+    @Override
+    public List<String> getAllCountries() {
+        return spaceAddressRepository.getAllCountries();
+    }
+
+    @Override
+    public List<String> getAllProvinces() {
+        return spaceAddressRepository.getAllProvinces();
+    }
+
+    @Override
+    public List<String> getAllDistricts() {
+        return spaceAddressRepository.getAllDistricts();
+    }
+
 
     public SpaceOverviewDTO spaceToSpaceOverviewDTO(Space space) {
         SpaceOverviewDTO spaceDTO = new SpaceOverviewDTO();

@@ -190,4 +190,25 @@ public class SpaceAPI {
         MessageResponse messageResponse = spaceService.hideSpace(spaceId, userId, false);
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
+
+    @GetMapping("/countries")
+    public ResponseEntity<?> findAllCountries(){
+
+        List<String> countries = spaceService.getAllCountries();
+        return new ResponseEntity<>(countries, HttpStatus.OK);
+    }
+
+    @GetMapping("/provinces")
+    public ResponseEntity<?> findAllProvinces(){
+
+        List<String> provinces = spaceService.getAllProvinces();
+        return new ResponseEntity<>(provinces, HttpStatus.OK);
+    }
+
+    @GetMapping("/districts")
+    public ResponseEntity<?> findAllDistricts(){
+
+        List<String> districts = spaceService.getAllDistricts();
+        return new ResponseEntity<>(districts, HttpStatus.OK);
+    }
 }
