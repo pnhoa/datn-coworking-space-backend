@@ -53,6 +53,7 @@ public class SpaceAPI {
 
     @GetMapping("/overview")
     public ResponseEntity<?> findAllOverview( @RequestParam(name = "q", required = false) String spaceName,
+                                      @RequestParam(name = "categoryId", required = false) Long categoryId,
                                       @RequestParam(name = "country", required = false) String country,
                                       @RequestParam(name = "province", required = false) String province,
                                       @RequestParam(name = "district", required = false) String district,
@@ -68,11 +69,11 @@ public class SpaceAPI {
             Pageable pagingSort = CommonUtils.sortItem(page, limit, sort);
             Page<SpaceOverviewDTO> spacePage = null;
 
-            if(StringUtils.isBlank(spaceName) && StringUtils.isBlank(province) && StringUtils.isBlank(country)
+            if(StringUtils.isBlank(spaceName) && categoryId == null && StringUtils.isBlank(province) && StringUtils.isBlank(country)
                     && StringUtils.isBlank(district) && approved == null && status == null) {
                 spacePage = spaceService.findAllOverviewPageAndSort(pagingSort);
             } else  {
-                spacePage = spaceService.findBySearchContentOverviewContaining(spaceName, country, province, district, approved, notApproved, status, pagingSort);
+                spacePage = spaceService.findBySearchContentOverviewContaining(spaceName, categoryId, country, province, district, approved, notApproved, status, pagingSort);
             }
 
 

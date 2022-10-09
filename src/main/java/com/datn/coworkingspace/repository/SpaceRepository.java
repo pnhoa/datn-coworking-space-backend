@@ -34,6 +34,18 @@ public interface SpaceRepository extends JpaRepository<Space, Long> {
     Page<Space> findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndStatus(
             String name, String country, String province, String district, Boolean status, Pageable pageable );
 
+    Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApprovedAndStatus(
+            String name, Long categoryId, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean status, Pageable pageable );
+
+    Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCase(
+            String name, Long categoryId, String country, String province, String district, Pageable pageable );
+
+    Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApproved(
+            String name, Long categoryId, String country, String province, String district, Boolean approved, Boolean notApproved, Pageable pageable );
+
+    Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndStatus(
+            String name, Long categoryId, String country, String province, String district, Boolean status, Pageable pageable );
+
     @Query("SELECT count(s) from Space s WHERE s.category.id=?1")
     Long countSpacesByCategoryId(Long categoryId);
 

@@ -380,7 +380,7 @@ public class SpaceService implements ISpaceService {
     }
 
     @Override
-    public Page<SpaceOverviewDTO> findBySearchContentOverviewContaining(String spaceName, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean status, Pageable pagingSort) {
+    public Page<SpaceOverviewDTO> findBySearchContentOverviewContaining(String spaceName, Long categoryId, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean status, Pageable pagingSort) {
         spaceName = (spaceName == null ? "" : spaceName);
         country = (country == null ? "" : country);
         province = (province == null ? "" : province);
@@ -392,21 +392,40 @@ public class SpaceService implements ISpaceService {
         //4 approved = false, notApproved = true, status = true => not approved , not delete
         //5 approved = false, notApproved = true, status = false => not approved , delete
         //approved:1-2 not approved 4-5 waiting approved 3
-        if(approved == null && notApproved == null && status == null) {
-            spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCase(spaceName, country, province, district, pagingSort).map(this::spaceToSpaceOverviewDTO);
-
-        } else {
-            if(approved != null && notApproved != null && status == null) {
-                spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApproved(spaceName, country, province, district, approved, notApproved, pagingSort).map(this::spaceToSpaceOverviewDTO);
-
-            } else if(approved == null && notApproved == null && status != null) {
-                spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndStatus(spaceName, country, province, district, status, pagingSort).map(this::spaceToSpaceOverviewDTO);
+        if(categoryId == null) {
+            if(approved == null && notApproved == null && status == null) {
+                spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCase(spaceName, country, province, district, pagingSort).map(this::spaceToSpaceOverviewDTO);
 
             } else {
-                spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApprovedAndStatus(spaceName, country, province, district, approved, notApproved, status, pagingSort).map(this::spaceToSpaceOverviewDTO);
+                if(approved != null && notApproved != null && status == null) {
+                    spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApproved(spaceName, country, province, district, approved, notApproved, pagingSort).map(this::spaceToSpaceOverviewDTO);
 
+                } else if(approved == null && notApproved == null && status != null) {
+                    spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndStatus(spaceName, country, province, district, status, pagingSort).map(this::spaceToSpaceOverviewDTO);
+
+                } else {
+                    spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApprovedAndStatus(spaceName, country, province, district, approved, notApproved, status, pagingSort).map(this::spaceToSpaceOverviewDTO);
+
+                }
+            }
+        } else {
+            if(approved == null && notApproved == null && status == null) {
+                spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCase(spaceName, categoryId, country, province, district, pagingSort).map(this::spaceToSpaceOverviewDTO);
+
+            } else {
+                if(approved != null && notApproved != null && status == null) {
+                    spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApproved(spaceName, categoryId, country, province, district, approved, notApproved, pagingSort).map(this::spaceToSpaceOverviewDTO);
+
+                } else if(approved == null && notApproved == null && status != null) {
+                    spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndStatus(spaceName, categoryId, country, province, district, status, pagingSort).map(this::spaceToSpaceOverviewDTO);
+
+                } else {
+                    spacePage =  spaceRepository.findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApprovedAndStatus(spaceName, categoryId, country, province, district, approved, notApproved, status, pagingSort).map(this::spaceToSpaceOverviewDTO);
+
+                }
             }
         }
+
        return  spacePage;
     }
 
