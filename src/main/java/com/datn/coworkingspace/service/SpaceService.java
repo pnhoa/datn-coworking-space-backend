@@ -510,11 +510,18 @@ public class SpaceService implements ISpaceService {
         if(!servicePack.isPresent()) {
             return new MessageResponse("Not found service package with ID=" + packageId, HttpStatus.NOT_FOUND, LocalDateTime.now());
         }
+        List<SpacePayment> spacePayments = spacePaymentRepository.findBySpaceId(spaceId);
         SpacePayment spacePayment = new SpacePayment();
         spacePayment.setSpace(space.get());
         spacePayment.setServicePackName(servicePack.get().getName());
         spacePayment.setPrice(servicePack.get().getPrice());
-        spacePayment.setExpiredTime(CommonUtils.addMonths(new Date(), servicePack.get().getPeriod()));
+        if(CollectionUtils.isEmpty(spacePayments)) {
+            spacePayment.setExpiredTime(CommonUtils.addMonths(new Date(), servicePack.get().getPeriod()));
+        } else {
+            Date maxExpiredTime = spacePaymentRepository.getMaxExpiredTimeBySpaceId(spaceId);
+            spacePayment.setExpiredTime(CommonUtils.addMonths(maxExpiredTime, servicePack.get().getPeriod()));
+        }
+
 
         space.get().setPaid(true);
         space.get().setExpired(false);
@@ -541,6 +548,8 @@ public class SpaceService implements ISpaceService {
         spaceDTO.setApproved(space.isApproved());
         spaceDTO.setNotApproved(space.isNotApproved());
         spaceDTO.setNumberOfRoom(space.getNumberOfRoom());
+        spaceDTO.setPaid(space.isPaid());
+        spaceDTO.setExpiredDate(spacePaymentRepository.getMaxExpiredTimeBySpaceId(space.getId()));
         spaceDTO.setUserId(space.getUser().getId());
 
         return spaceDTO;
