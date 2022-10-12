@@ -6,6 +6,7 @@ import com.datn.coworkingspace.entity.Package;
 import com.datn.coworkingspace.exception.ResourceNotFoundException;
 import com.datn.coworkingspace.mapper.SpaceMapper;
 import com.datn.coworkingspace.repository.*;
+import com.datn.coworkingspace.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +46,12 @@ public class SpaceService implements ISpaceService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ServicePackRepository servicePackRepository;
+
+    @Autowired
+    private  SpacePaymentRepository spacePaymentRepository;
 
 
     @Autowired
@@ -108,6 +115,8 @@ public class SpaceService implements ISpaceService {
         space.setStatus(true);
         space.setApproved(false);
         space.setNotApproved(false);
+        space.setPaid(false);
+        space.setExpired(true);
         space.setxCoordinate(theSpaceDto.getxCoordinate());
         space.setyCoordinate(theSpaceDto.getyCoordinate());
         space.setDiscount(theSpaceDto.getDiscount());
@@ -487,6 +496,40 @@ public class SpaceService implements ISpaceService {
         return spaceAddressRepository.getAllDistricts();
     }
 
+    @Override
+    public MessageResponse paymentSpace(Long spaceId, Long packageId) {
+        Optional<Space> space = spaceRepository.findById(spaceId);
+        if(!space.isPresent()) {
+            return new MessageResponse("Not found space with ID=" + spaceId, HttpStatus.NOT_FOUND, LocalDateTime.now());
+        }
+        if(space.get().isApproved() == false) {
+            return new MessageResponse("Space need to approve before payment.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        }
+
+        Optional<ServicePack> servicePack = servicePackRepository.findById(packageId);
+        if(!servicePack.isPresent()) {
+            return new MessageResponse("Not found service package with ID=" + packageId, HttpStatus.NOT_FOUND, LocalDateTime.now());
+        }
+        List<SpacePayment> spacePayments = spacePaymentRepository.findBySpaceId(spaceId);
+        SpacePayment spacePayment = new SpacePayment();
+        spacePayment.setSpace(space.get());
+        spacePayment.setServicePackName(servicePack.get().getName());
+        spacePayment.setPrice(servicePack.get().getPrice());
+        if(CollectionUtils.isEmpty(spacePayments)) {
+            spacePayment.setExpiredTime(CommonUtils.addMonths(new Date(), servicePack.get().getPeriod()));
+        } else {
+            Date maxExpiredTime = spacePaymentRepository.getMaxExpiredTimeBySpaceId(spaceId);
+            spacePayment.setExpiredTime(CommonUtils.addMonths(maxExpiredTime, servicePack.get().getPeriod()));
+        }
+
+
+        space.get().setPaid(true);
+        space.get().setExpired(false);
+        spaceRepository.save(space.get());
+        spacePaymentRepository.save(spacePayment);
+        return new MessageResponse("Space has been paid successfully.", HttpStatus.OK, LocalDateTime.now());
+    }
+
 
     public SpaceOverviewDTO spaceToSpaceOverviewDTO(Space space) {
         SpaceOverviewDTO spaceDTO = new SpaceOverviewDTO();
@@ -505,6 +548,8 @@ public class SpaceService implements ISpaceService {
         spaceDTO.setApproved(space.isApproved());
         spaceDTO.setNotApproved(space.isNotApproved());
         spaceDTO.setNumberOfRoom(space.getNumberOfRoom());
+        spaceDTO.setPaid(space.isPaid());
+        spaceDTO.setExpiredDate(spacePaymentRepository.getMaxExpiredTimeBySpaceId(space.getId()));
         spaceDTO.setUserId(space.getUser().getId());
 
         return spaceDTO;

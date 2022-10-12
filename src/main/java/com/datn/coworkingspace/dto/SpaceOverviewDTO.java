@@ -2,6 +2,7 @@ package com.datn.coworkingspace.dto;
 
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class SpaceOverviewDTO {
 
@@ -34,6 +35,10 @@ public class SpaceOverviewDTO {
     private boolean approved;
 
     private boolean notApproved;
+
+    private boolean paid;
+
+    private Date expiredDate;
 
     private Long userId;
 
@@ -133,6 +138,14 @@ public class SpaceOverviewDTO {
     public Long getUserId() { return userId; }
 
     public void setUserId(Long userId) { this.userId = userId; }
+
+    public boolean isPaid() { return paid; }
+
+    public void setPaid(boolean paid) { this.paid = paid; }
+
+    public Date getExpiredDate() { return expiredDate; }
+
+    public void setExpiredDate(Date expiredDate) { this.expiredDate = expiredDate; }
 
     public SpaceOverviewDTO() {
     }
