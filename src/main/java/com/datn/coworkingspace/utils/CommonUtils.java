@@ -262,5 +262,15 @@ public class CommonUtils {
         return strDateArr[2];
     }
 
+    public static Date addMonths(Date today, Integer monthsToAdd) {
+        if (today != null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(today);
+            c.add(Calendar.MONTH, monthsToAdd);
+            return c.getTime();
+        } else {
+            return null;
+        }
+    }
 
 }

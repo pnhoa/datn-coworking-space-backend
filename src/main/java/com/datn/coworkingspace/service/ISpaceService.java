@@ -50,4 +50,6 @@ public interface ISpaceService {
     List<String> getAllProvinces();
 
     List<String> getAllDistricts();
+
+    MessageResponse paymentSpace(Long spaceId, Long packageId);
 }

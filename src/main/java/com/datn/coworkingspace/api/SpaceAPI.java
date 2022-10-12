@@ -206,4 +206,10 @@ public class SpaceAPI {
         List<String> districts = spaceService.getAllDistricts();
         return new ResponseEntity<>(districts, HttpStatus.OK);
     }
+
+    @PutMapping("/payment/{id}/{packageId}")
+    public ResponseEntity<?> paymentSpace(@PathVariable("id") Long spaceId, @PathVariable("packageId") Long packageId) {
+        MessageResponse messageResponse = spaceService.paymentSpace(spaceId, packageId);
+        return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+    }
 }

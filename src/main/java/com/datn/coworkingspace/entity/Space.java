@@ -46,6 +46,10 @@ public class Space extends BaseEntity {
 
     private boolean notApproved;
 
+    private boolean paid;
+
+    private boolean expired;
+
     private double xCoordinate;
 
     private double yCoordinate;
@@ -98,6 +102,10 @@ public class Space extends BaseEntity {
             mappedBy = "space",
             orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
+
+    @OneToMany(mappedBy = "space", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("space")
+    private Set<SpacePayment> spacePayments;
 
     @Transient
     @JsonProperty(value = "categoryId")
@@ -361,4 +369,16 @@ public class Space extends BaseEntity {
     public String getUnit() { return unit; }
 
     public void setUnit(String unit) { this.unit = unit; }
+
+    public boolean isPaid() { return paid; }
+
+    public void setPaid(boolean paid) { this.paid = paid; }
+
+    public boolean isExpired() { return expired; }
+
+    public void setExpired(boolean expired) { this.expired = expired; }
+
+    public Set<SpacePayment> getSpacePayments() { return spacePayments; }
+
+    public void setSpacePayments(Set<SpacePayment> spacePayments) { this.spacePayments = spacePayments; }
 }
