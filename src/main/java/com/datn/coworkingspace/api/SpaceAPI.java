@@ -14,7 +14,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class SpaceAPI {
     @Autowired
     private ISpaceService spaceService;
 
-    @GetMapping("/")
-    public ResponseEntity<?> findAll( @RequestParam(name = "q", required = false) String spaceName,
+    @GetMapping("/detail")
+    public ResponseEntity<?> findAllDetails( @RequestParam(name = "q", required = false) String spaceName,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "20") int limit,
                                       @RequestParam(defaultValue = "id,ASC") String[] sort){
@@ -60,6 +59,7 @@ public class SpaceAPI {
                                       @RequestParam(name = "approved", required = false) Boolean approved,
                                       @RequestParam(name = "notApproved", required = false) Boolean notApproved,
                                       @RequestParam(name = "status", required = false) Boolean status,
+                                      @RequestParam(name = "expired", required = false) Boolean expired,
                                       @RequestParam(defaultValue = "0") int page,
                                       @RequestParam(defaultValue = "20") int limit,
                                       @RequestParam(defaultValue = "id,ASC") String[] sort){
@@ -70,10 +70,10 @@ public class SpaceAPI {
             Page<SpaceOverviewDTO> spacePage = null;
 
             if(StringUtils.isBlank(spaceName) && categoryId == null && StringUtils.isBlank(province) && StringUtils.isBlank(country)
-                    && StringUtils.isBlank(district) && approved == null && status == null) {
+                    && StringUtils.isBlank(district) && approved == null && status == null && expired == null) {
                 spacePage = spaceService.findAllOverviewPageAndSort(pagingSort);
             } else  {
-                spacePage = spaceService.findBySearchContentOverviewContaining(spaceName, categoryId, country, province, district, approved, notApproved, status, pagingSort);
+                spacePage = spaceService.findBySearchContentOverviewContaining(spaceName, categoryId, country, province, district, approved, notApproved, status, expired, pagingSort);
             }
 
 
@@ -211,5 +211,29 @@ public class SpaceAPI {
     public ResponseEntity<?> paymentSpace(@PathVariable("id") Long spaceId, @PathVariable("packageId") Long packageId) {
         MessageResponse messageResponse = spaceService.paymentSpace(spaceId, packageId);
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+    }
+
+    @GetMapping("")
+    public ResponseEntity<?> findAllOverviewAndSearchForCustomer( @RequestParam(name = "q", required = false) String content,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "20") int limit,
+                                              @RequestParam(defaultValue = "id,ASC") String[] sort){
+
+        try {
+
+            Pageable pagingSort = CommonUtils.sortItem(page, limit, sort);
+            Page<SpaceOverviewDTO> spacePage = null;
+
+            if(StringUtils.isBlank(content)) {
+                spacePage = spaceService.findBySearchContentOverviewContaining(null, null, null, null, null, true, false, true, false,pagingSort);
+            } else  {
+                spacePage = spaceService.findBySearchContentOverviewContainingForCustomer(content, pagingSort);
+            }
+
+            return new ResponseEntity<>(spacePage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

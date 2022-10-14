@@ -38,6 +38,8 @@ public class SpaceOverviewDTO {
 
     private boolean paid;
 
+    private boolean expired;
+
     private Date expiredDate;
 
     private Long userId;
@@ -146,6 +148,10 @@ public class SpaceOverviewDTO {
     public Date getExpiredDate() { return expiredDate; }
 
     public void setExpiredDate(Date expiredDate) { this.expiredDate = expiredDate; }
+
+    public boolean isExpired() { return expired; }
+
+    public void setExpired(boolean expired) { this.expired = expired; }
 
     public SpaceOverviewDTO() {
     }
