@@ -236,4 +236,11 @@ public class SpaceAPI {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/processExpiredSpace")
+    public ResponseEntity<?> processExpiredSpace(){
+
+        MessageResponse messageResponse = spaceService.processExpiredSpace();
+        return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+    }
 }

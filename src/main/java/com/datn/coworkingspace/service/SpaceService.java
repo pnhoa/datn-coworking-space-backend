@@ -545,16 +545,23 @@ public class SpaceService implements ISpaceService {
         if(!servicePack.isPresent()) {
             return new MessageResponse("Not found service package with ID=" + packageId, HttpStatus.NOT_FOUND, LocalDateTime.now());
         }
-        List<SpacePayment> spacePayments = spacePaymentRepository.findBySpaceId(spaceId);
+        Long totalPayments = spacePaymentRepository.countBySpaceId(spaceId);
         SpacePayment spacePayment = new SpacePayment();
         spacePayment.setSpace(space.get());
         spacePayment.setServicePackName(servicePack.get().getName());
         spacePayment.setPrice(servicePack.get().getPrice());
-        if(CollectionUtils.isEmpty(spacePayments)) {
+        spacePayment.setCreatedDate(new Date());
+        spacePayment.setOutOfDate(false);
+        if(Long.valueOf(0).equals(totalPayments)) {
             spacePayment.setExpiredTime(CommonUtils.addMonths(new Date(), servicePack.get().getPeriod()));
         } else {
-            Date maxExpiredTime = spacePaymentRepository.getMaxExpiredTimeBySpaceId(spaceId);
-            spacePayment.setExpiredTime(CommonUtils.addMonths(maxExpiredTime, servicePack.get().getPeriod()));
+            SpacePayment oldSpacePayment = spacePaymentRepository.findBySpaceIdAndOutOfDate(spaceId);
+            oldSpacePayment.setOutOfDate(true);
+            spacePaymentRepository.save(oldSpacePayment);
+
+            Date maxExpiredTime = oldSpacePayment.getExpiredTime();
+            Date newExpiredTime = maxExpiredTime.compareTo(new Date()) > 0 ? maxExpiredTime : new Date();
+            spacePayment.setExpiredTime(CommonUtils.addMonths(newExpiredTime, servicePack.get().getPeriod()));
         }
 
 
@@ -563,6 +570,23 @@ public class SpaceService implements ISpaceService {
         spaceRepository.save(space.get());
         spacePaymentRepository.save(spacePayment);
         return new MessageResponse("Space has been paid successfully.", HttpStatus.OK, LocalDateTime.now());
+    }
+
+    @Override
+    public MessageResponse processExpiredSpace() {
+        List<Long> spaceIds = spacePaymentRepository.findAllGroupBySpaceId();
+        List<String> expiredSpaceIds = new ArrayList<>();
+        for (Long spaceId : spaceIds) {
+            Date maxExpiredTime = spacePaymentRepository.getMaxExpiredTimeBySpaceId(spaceId);
+            if (maxExpiredTime.compareTo(new Date()) <= 0) {
+                Space space = spaceRepository.getById(spaceId);
+                space.setExpired(true);
+                space.setPaid(false);
+                spaceRepository.save(space);
+                expiredSpaceIds.add(spaceId.toString());
+            }
+        }
+        return new MessageResponse( expiredSpaceIds.size() == 0 ? "No expired space" : String.format("Spaces with id = %s need renew.", String.join(", ", expiredSpaceIds)), HttpStatus.OK, LocalDateTime.now());
     }
 
 
