@@ -39,7 +39,10 @@ public interface ISpaceService {
 
     Page<SpaceOverviewDTO> findAllOverviewPageAndSort(Pageable pagingSort);
 
-    Page<SpaceOverviewDTO> findBySearchContentOverviewContaining(String spaceName, Long categoryId, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean status, Pageable pagingSort);
+    Page<SpaceOverviewDTO> findBySearchContentOverviewContaining(String spaceName, Long categoryId, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean status, Boolean expired, Pageable pagingSort);
+
+    Page<SpaceOverviewDTO> findBySearchContentOverviewContainingForCustomer(String content, Pageable pagingSort);
+
 
     MessageResponse approveSpace(Long spaceId, Long userId, boolean isApproved);
 
@@ -52,4 +55,6 @@ public interface ISpaceService {
     List<String> getAllDistricts();
 
     MessageResponse paymentSpace(Long spaceId, Long packageId);
+
+    MessageResponse processExpiredSpace();
 }

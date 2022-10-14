@@ -1,16 +1,13 @@
 package com.datn.coworkingspace.repository;
 
-import com.datn.coworkingspace.entity.Comment;
 import com.datn.coworkingspace.entity.Space;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public interface SpaceRepository extends JpaRepository<Space, Long> {
 
@@ -46,10 +43,39 @@ public interface SpaceRepository extends JpaRepository<Space, Long> {
     Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndStatus(
             String name, Long categoryId, String country, String province, String district, Boolean status, Pageable pageable );
 
+
+    Page<Space> findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApprovedAndExpired(
+            String name, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean expired, Pageable pageable );
+
+    Page<Space> findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndStatusAndExpired(
+            String name, String country, String province, String district, Boolean status, Boolean expired, Pageable pageable );
+
+    Page<Space> findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApprovedAndStatusAndExpired(
+            String name, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean status, Boolean expired, Pageable pageable );
+
+    Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApprovedAndStatusAndExpired(
+            String name, Long categoryId, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean status, Boolean expired, Pageable pageable );
+
+    Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndApprovedAndNotApprovedAndExpired(
+            String spaceName, Long categoryId, String country, String province, String district, Boolean approved, Boolean notApproved, Boolean expired, Pageable pagingSort);
+
+    Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndStatusAndExpired(
+            String spaceName, Long categoryId, String country, String province, String district, Boolean status, Boolean expired, Pageable pagingSort);
+
+
+    Page<Space> findByNameContainingIgnoreCaseAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndExpired(
+            String spaceName, String country, String province, String district, Boolean expired, Pageable pagingSort);
+
+    Page<Space> findByNameContainingIgnoreCaseAndCategoryIdAndSpaceAddress_CountryContainingIgnoreCaseAndSpaceAddress_ProvinceContainingIgnoreCaseAndSpaceAddress_DistrictContainingIgnoreCaseAndExpired(
+            String spaceName, Long categoryId, String country, String province, String district, Boolean expired, Pageable pagingSort);
+
     @Query("SELECT count(s) from Space s WHERE s.category.id=?1")
     Long countSpacesByCategoryId(Long categoryId);
 
 
     @Query(value = "SELECT s FROM Space s WHERE s.id IN :listId")
     Page<Space> findSpaceByIds(Collection<Long> listId, Pageable pagingSort);
+
+    Page<Space> findByNameContainingIgnoreCaseOrSpaceAddress_CountryContainingIgnoreCaseOrSpaceAddress_ProvinceContainingIgnoreCaseOrSpaceAddress_DistrictContainingIgnoreCase(String spaceName, String country, String province, String district, Pageable pagingSort);
+
 }

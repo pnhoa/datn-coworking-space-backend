@@ -17,6 +17,8 @@ public class SpacePayment extends BaseEntity {
 
     private Date expiredTime;
 
+    private boolean outOfDate;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "space_id")
     @JsonIgnoreProperties("spacePayments")
@@ -38,6 +40,10 @@ public class SpacePayment extends BaseEntity {
     public Space getSpace() { return space; }
 
     public void setSpace(Space space) { this.space = space; }
+
+    public boolean isOutOfDate() { return outOfDate; }
+
+    public void setOutOfDate(boolean outOfDate) { this.outOfDate = outOfDate; }
 
     public SpacePayment() {
         super();
