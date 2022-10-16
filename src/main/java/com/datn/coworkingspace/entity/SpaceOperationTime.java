@@ -3,7 +3,6 @@ package com.datn.coworkingspace.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "space_operation_time")
@@ -15,13 +14,13 @@ public class SpaceOperationTime {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private Integer day;
+    private String day;
 
-    @Column(nullable= false, precision=4, scale=0)
-    private BigDecimal openTime;
+    @Column(nullable= false)
+    private String openTime;
 
-    @Column(nullable= false, precision=4, scale=0)
-    private BigDecimal closeTime;
+    @Column(nullable= false)
+    private String closeTime;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "space_id")
@@ -39,27 +38,27 @@ public class SpaceOperationTime {
         this.id = id;
     }
 
-    public Integer getDay() {
+    public String getDay() {
         return day;
     }
 
-    public void setDay(Integer day) {
+    public void setDay(String day) {
         this.day = day;
     }
 
-    public BigDecimal getOpenTime() {
+    public String getOpenTime() {
         return openTime;
     }
 
-    public void setOpenTime(BigDecimal openTime) {
+    public void setOpenTime(String openTime) {
         this.openTime = openTime;
     }
 
-    public BigDecimal getCloseTime() {
+    public String getCloseTime() {
         return closeTime;
     }
 
-    public void setCloseTime(BigDecimal closeTime) {
+    public void setCloseTime(String closeTime) {
         this.closeTime = closeTime;
     }
 
