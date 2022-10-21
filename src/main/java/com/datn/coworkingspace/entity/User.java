@@ -13,7 +13,7 @@ import java.util.Set;
 @Table(name = "users", uniqueConstraints =
         {@UniqueConstraint(columnNames = "userName"),
          @UniqueConstraint(columnNames = "email")})
-@JsonIgnoreProperties({"roles", "password", "feedbacks", "accCustomer", "provider", "providerId", "spaces"})
+@JsonIgnoreProperties({"roles", "password", "feedbacks", "accCustomer", "provider", "providerId", "spaces", "bookings"})
 public class User extends BaseEntity{
 
     @Column(name = "username")
@@ -67,6 +67,11 @@ public class User extends BaseEntity{
             mappedBy = "user",
             orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "user",
+            orphanRemoval = true)
+    private List<Booking> bookings = new ArrayList<>();
 
     @Transient
     private String roleCode;
@@ -179,4 +184,8 @@ public class User extends BaseEntity{
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
+    public List<Booking> getBookings() { return bookings; }
+
+    public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
 }
