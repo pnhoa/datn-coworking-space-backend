@@ -1,13 +1,16 @@
 package com.datn.coworkingspace.entity;
 
+import com.datn.coworkingspace.enums.BookingStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Table(name= "booking")
+@JsonIgnoreProperties({"subSpace", "user"})
 public class Booking extends BaseEntity {
 
     @Column(name = "name")
@@ -23,10 +26,10 @@ public class Booking extends BaseEntity {
     private String phoneNumber;
 
     @Column(name = "number_of_people")
-    private String numberOfPeople;
+    private Integer numberOfPeople;
 
     @Column(name = "total_price")
-    private String totalPrice;
+    private BigDecimal totalPrice;
 
     @Column(name = "start_date")
     private Date startDate;
@@ -55,6 +58,12 @@ public class Booking extends BaseEntity {
     @JsonProperty(value = "subSpaceId")
     private Long subSpaceIds;
 
+    @Column(name = "space_id")
+    private Long spaceId;
+
+    @Column(name = "status")
+    private BookingStatus status;
+
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
@@ -71,13 +80,13 @@ public class Booking extends BaseEntity {
 
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-    public String getNumberOfPeople() { return numberOfPeople; }
+    public Integer getNumberOfPeople() { return numberOfPeople; }
 
-    public void setNumberOfPeople(String numberOfPeople) { this.numberOfPeople = numberOfPeople; }
+    public void setNumberOfPeople(Integer numberOfPeople) { this.numberOfPeople = numberOfPeople; }
 
-    public String getTotalPrice() { return totalPrice; }
+    public BigDecimal getTotalPrice() { return totalPrice; }
 
-    public void setTotalPrice(String totalPrice) { this.totalPrice = totalPrice; }
+    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
 
     public Date getStartDate() { return startDate; }
 
@@ -106,6 +115,14 @@ public class Booking extends BaseEntity {
     public Long getSubSpaceIds() { return subSpaceIds; }
 
     public void setSubSpaceIds(Long subSpaceIds) { this.subSpaceIds = subSpaceIds; }
+
+    public Long getSpaceId() { return spaceId; }
+
+    public void setSpaceId(Long spaceId) { this.spaceId = spaceId; }
+
+    public BookingStatus getStatus() { return status; }
+
+    public void setStatus(BookingStatus status) { this.status = status; }
 
     public Booking() {
     }

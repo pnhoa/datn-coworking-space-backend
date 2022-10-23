@@ -1,6 +1,11 @@
 package com.datn.coworkingspace.dto;
 
+import com.datn.coworkingspace.enums.BookingStatus;
+import com.datn.coworkingspace.validation.EnumNamePattern;
+import com.datn.coworkingspace.validationgroups.OnUpdate;
+
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class BookingDTO extends AbstractDTO {
@@ -17,10 +22,10 @@ public class BookingDTO extends AbstractDTO {
     private String phoneNumber;
 
     @NotNull(message = "Please input number of people")
-    private String numberOfPeople;
+    private Integer numberOfPeople;
 
     @NotNull(message = "Please input total price")
-    private String totalPrice;
+    private BigDecimal totalPrice;
 
     @NotNull(message = "Please input start date")
     private Date startDate;
@@ -35,6 +40,13 @@ public class BookingDTO extends AbstractDTO {
 
     @NotNull(message = "Please input sub space id")
     private Long subSpaceId;
+
+    @NotNull(message = "Please input space id")
+    private Long spaceId;
+
+    @NotNull(message = "is required", groups = {OnUpdate.class})
+    @EnumNamePattern(regexp = "CANCELLED|COMPLETED|BOOKED|PENDING")
+    private BookingStatus status;
 
     public String getName() { return name; }
 
@@ -52,13 +64,13 @@ public class BookingDTO extends AbstractDTO {
 
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
 
-    public String getNumberOfPeople() { return numberOfPeople; }
+    public Integer getNumberOfPeople() { return numberOfPeople; }
 
-    public void setNumberOfPeople(String numberOfPeople) { this.numberOfPeople = numberOfPeople; }
+    public void setNumberOfPeople(Integer numberOfPeople) { this.numberOfPeople = numberOfPeople; }
 
-    public String getTotalPrice() { return totalPrice; }
+    public BigDecimal getTotalPrice() { return totalPrice; }
 
-    public void setTotalPrice(String totalPrice) { this.totalPrice = totalPrice; }
+    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
 
     public Date getStartDate() { return startDate; }
 
@@ -79,6 +91,14 @@ public class BookingDTO extends AbstractDTO {
     public Long getSubSpaceId() { return subSpaceId; }
 
     public void setSubSpaceId(Long subSpaceId) { this.subSpaceId = subSpaceId; }
+
+    public Long getSpaceId() { return spaceId; }
+
+    public void setSpaceId(Long spaceId) { this.spaceId = spaceId; }
+
+    public BookingStatus getStatus() { return status; }
+
+    public void setStatus(BookingStatus status) { this.status = status; }
 
     public BookingDTO() {
     }
