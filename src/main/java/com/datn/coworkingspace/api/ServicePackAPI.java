@@ -45,6 +45,7 @@ public class ServicePackAPI {
 
             return new ResponseEntity<>(servicePackPage.getContent(), HttpStatus.OK);
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -60,11 +61,11 @@ public class ServicePackAPI {
     public ResponseEntity<MessageResponse> createServicePack(@Valid @RequestBody ServicePackDTO theServicePackDto, BindingResult theBindingResult){
 
         if(theBindingResult.hasErrors()){
-            return new ResponseEntity<>(new MessageResponse("Invalid value for create category", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MessageResponse("Invalid value for create service pack", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
 
         if(servicePackService.existsByName(theServicePackDto.getName())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Category name is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Service pack name is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
         }
 
         MessageResponse messageResponse = servicePackService.createServicePack(theServicePackDto);

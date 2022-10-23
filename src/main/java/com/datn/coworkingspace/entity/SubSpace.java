@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "sub_space")
-@JsonIgnoreProperties({"packageSubSpace"})
+@JsonIgnoreProperties({"packageSubSpace", "bookings"})
 public class SubSpace extends BaseEntity {
 
     private String title;
@@ -26,6 +28,11 @@ public class SubSpace extends BaseEntity {
     @JsonIgnoreProperties("subSpaces")
     @JsonProperty(value = "package")
     private Package packageSubSpace;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "subSpace",
+            orphanRemoval = true)
+    private List<Booking> bookings = new ArrayList<>();
 
     public SubSpace() {
     }
@@ -73,4 +80,8 @@ public class SubSpace extends BaseEntity {
     public Package getPackageSubSpace() { return packageSubSpace; }
 
     public void setPackageSubSpace(Package packageSubSpace) { this.packageSubSpace = packageSubSpace; }
+
+    public List<Booking> getBookings() { return bookings; }
+
+    public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
 }
