@@ -34,6 +34,9 @@ public class Booking extends BaseEntity {
     @Column(name = "start_date")
     private Date startDate;
 
+    @Column(name = "end_date")
+    private Date endDate;
+
     @Column(name = "number_time_per_unit")
     private Integer numberTimePerUnit;
 
@@ -91,6 +94,10 @@ public class Booking extends BaseEntity {
     public Date getStartDate() { return startDate; }
 
     public void setStartDate(Date startDate) { this.startDate = startDate; }
+
+    public Date getEndDate() { return endDate; }
+
+    public void setEndDate(Date endDate) { this.endDate = endDate; }
 
     public Integer getNumberTimePerUnit() { return numberTimePerUnit; }
 

@@ -2,6 +2,7 @@ package com.datn.coworkingspace.service;
 
 import com.datn.coworkingspace.dto.*;
 import com.datn.coworkingspace.entity.Space;
+import com.datn.coworkingspace.entity.SubSpace;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -57,4 +58,6 @@ public interface ISpaceService {
     MessageResponse paymentSpace(Long spaceId, Long packageId);
 
     MessageResponse processExpiredSpace();
+
+    SubSpace findMatchSpace(MatchSubSpaceDTO matchSubSpaceDTO);
 }

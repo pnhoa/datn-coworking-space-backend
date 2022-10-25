@@ -2,6 +2,7 @@ package com.datn.coworkingspace.api;
 
 import com.datn.coworkingspace.dto.*;
 import com.datn.coworkingspace.entity.Space;
+import com.datn.coworkingspace.entity.SubSpace;
 import com.datn.coworkingspace.service.ISpaceService;
 import com.datn.coworkingspace.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -242,5 +243,20 @@ public class SpaceAPI {
 
         MessageResponse messageResponse = spaceService.processExpiredSpace();
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+    }
+
+    @PostMapping("/find")
+    public ResponseEntity<?> findMatchSubSpace(@Valid @RequestBody MatchSubSpaceDTO matchSubSpaceDTO, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity<>(new MessageResponse("Invalid value for find match sup space", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
+        }
+        SubSpace subSpace = spaceService.findMatchSpace(matchSubSpaceDTO);
+
+        if(subSpace == null) {
+            MessageResponse messageResponse = new MessageResponse("Don't match any sub space", HttpStatus.NOT_FOUND, LocalDateTime.now());
+            return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+        }
+
+        return new ResponseEntity<>(subSpace, HttpStatus.OK);
     }
 }

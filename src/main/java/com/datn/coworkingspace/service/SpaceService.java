@@ -3,10 +3,12 @@ package com.datn.coworkingspace.service;
 import com.datn.coworkingspace.dto.*;
 import com.datn.coworkingspace.entity.*;
 import com.datn.coworkingspace.entity.Package;
+import com.datn.coworkingspace.enums.BookingStatus;
 import com.datn.coworkingspace.exception.ResourceNotFoundException;
 import com.datn.coworkingspace.mapper.SpaceMapper;
 import com.datn.coworkingspace.repository.*;
 import com.datn.coworkingspace.utils.CommonUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -55,6 +57,11 @@ public class SpaceService implements ISpaceService {
     @Autowired
     private  SpacePaymentRepository spacePaymentRepository;
 
+    @Autowired
+    private SubSpaceRepository subSpaceRepository;
+
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @Autowired
     private CategoryService categoryService;
@@ -190,6 +197,8 @@ public class SpaceService implements ISpaceService {
                                 subSpace.setNumberOfPeople(subSpaceDTO.getNumberOfPeople());
                                 subSpace.setStatus(subSpaceDTO.isStatus());
                                 subSpace.setPackageSubSpace(packageService);
+                                subSpace.setCreatedDate(new Date());
+                                subSpace.setCreatedBy(user.get().getName());
 
                                 subSpaces.add(subSpace);
                             }
@@ -226,6 +235,15 @@ public class SpaceService implements ISpaceService {
         }
 
         spaceRepository.save(space);
+
+        for(ServiceSpace serviceSpace : space.getServiceSpaces()) {
+            for(Package pack : serviceSpace.getPackages()) {
+                for(SubSpace subSpace : pack.getSubSpaces()) {
+                    subSpace.setSpaceId(space.getId());
+                    subSpaceRepository.save(subSpace);
+                }
+            }
+        }
 
 
         return new MessageResponse("Create space successfully!", HttpStatus.OK, LocalDateTime.now());
@@ -626,6 +644,47 @@ public class SpaceService implements ISpaceService {
         List<SpaceOverviewDTO> spaceOverviewDTOS = spacePage.getContent().stream().filter(SpaceOverviewDTO::isApproved).filter(x -> !x.isNotApproved()).filter(SpaceOverviewDTO::isStatus).filter(x -> !x.isExpired()).collect(Collectors.toList());
 
         return  new PageImpl<>(spaceOverviewDTOS, pagingSort, spaceOverviewDTOS.size());
+    }
+
+
+    @Override
+    public SubSpace findMatchSpace(MatchSubSpaceDTO matchSubSpaceDTO) {
+        if(matchSubSpaceDTO.getStartDate().compareTo(matchSubSpaceDTO.getEndDate()) >= 0) {
+            return null;
+        }
+        List<SubSpace> matchPeopleSubSpaces = subSpaceRepository.findBySpaceIdAndNumberOfPeopleGreaterThanEqual(matchSubSpaceDTO.getSpaceId(), matchSubSpaceDTO.getNumberOfPeople());
+        if(CollectionUtils.isEmpty(matchPeopleSubSpaces)) {
+            return null;
+        }
+        Date s2 = matchSubSpaceDTO.getStartDate();
+        Date e2 = matchSubSpaceDTO.getEndDate();
+        for(SubSpace subSpace : matchPeopleSubSpaces) {
+            List<Booking> bookings = bookingRepository.findBySubSpaceIdAndStatusNotDone(subSpace.getId(), EnumUtils.getEnum(BookingStatus.class, "PENDING"),
+                    EnumUtils.getEnum(BookingStatus.class, "BOOKED"));
+            if(CollectionUtils.isEmpty(bookings)) {
+                return subSpace;
+            }
+            List<Boolean> checkOverLap = new ArrayList<>();
+            for(Booking booking : bookings) {
+                Date s1 = booking.getStartDate();
+                Date e1 = booking.getEndDate();
+                if(s1.before(s2) && e1.after(s2) ||
+                        s1.before(e2) && e1.after(e2) ||
+                        s1.before(s2) && e1.after(e2) ||
+                        s1.after(s2) && e1.before(e2) ) {
+                    checkOverLap.add(false);
+                    System.out.println("They overlap");
+                } else {
+                    checkOverLap.add(true);
+                    System.out.println("They don't overlap");
+                }
+            }
+
+            if(checkOverLap.stream().allMatch(x -> x == true)) {
+                return subSpace;
+            }
+        }
+        return null;
     }
 }
 

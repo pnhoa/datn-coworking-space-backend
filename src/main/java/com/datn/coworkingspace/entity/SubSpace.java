@@ -34,6 +34,8 @@ public class SubSpace extends BaseEntity {
             orphanRemoval = true)
     private List<Booking> bookings = new ArrayList<>();
 
+    private Long spaceId;
+
     public SubSpace() {
     }
 
@@ -84,4 +86,8 @@ public class SubSpace extends BaseEntity {
     public List<Booking> getBookings() { return bookings; }
 
     public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
+
+    public Long getSpaceId() { return spaceId; }
+
+    public void setSpaceId(Long spaceId) { this.spaceId = spaceId; }
 }
