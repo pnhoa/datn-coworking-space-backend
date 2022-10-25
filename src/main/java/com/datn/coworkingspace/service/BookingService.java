@@ -100,6 +100,7 @@ public class BookingService implements  IBookingService{
         booking.setNumberOfPeople(theBookingDto.getNumberOfPeople());
         booking.setTotalPrice(theBookingDto.getTotalPrice());
         booking.setStartDate(theBookingDto.getStartDate());
+        booking.setEndDate(theBookingDto.getEndDate());
         booking.setNumberTimePerUnit(theBookingDto.getNumberTimePerUnit());
         booking.setNote(theBookingDto.getNote());
         booking.setCreatedBy(theBookingDto.getName());
@@ -108,12 +109,6 @@ public class BookingService implements  IBookingService{
         booking.setSubSpace(subSpace.get());
         booking.setUser(user.get());
         booking.setSpaceId(theBookingDto.getSpaceId());
-
-        subSpace.get().setModifiedBy(user.get().getName());
-        subSpace.get().setModifiedDate(new Date());
-        subSpace.get().setStatus(false);
-
-        subSpaceRepository.save(subSpace.get());
 
         bookingRepository.save(booking);
 

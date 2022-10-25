@@ -30,6 +30,9 @@ public class BookingDTO extends AbstractDTO {
     @NotNull(message = "Please input start date")
     private Date startDate;
 
+    @NotNull(message = "Please input end date")
+    private Date endDate;
+
     @NotNull(message = "Please input number time per unit")
     private Integer numberTimePerUnit;
 
@@ -75,6 +78,10 @@ public class BookingDTO extends AbstractDTO {
     public Date getStartDate() { return startDate; }
 
     public void setStartDate(Date startDate) { this.startDate = startDate; }
+
+    public Date getEndDate() { return endDate; }
+
+    public void setEndDate(Date endDate) { this.endDate = endDate; }
 
     public Integer getNumberTimePerUnit() { return numberTimePerUnit; }
 
