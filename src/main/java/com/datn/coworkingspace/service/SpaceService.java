@@ -648,7 +648,7 @@ public class SpaceService implements ISpaceService {
 
 
     @Override
-    public SubSpace findMatchSpace(MatchSubSpaceDTO matchSubSpaceDTO) {
+    public List<SubSpace> findMatchSpace(MatchSubSpaceDTO matchSubSpaceDTO) {
         if(matchSubSpaceDTO.getStartDate().compareTo(matchSubSpaceDTO.getEndDate()) >= 0) {
             return null;
         }
@@ -656,15 +656,17 @@ public class SpaceService implements ISpaceService {
         if(CollectionUtils.isEmpty(matchPeopleSubSpaces)) {
             return null;
         }
+        List<SubSpace> subSpaces = new ArrayList<>();
         Date s2 = matchSubSpaceDTO.getStartDate();
         Date e2 = matchSubSpaceDTO.getEndDate();
         for(SubSpace subSpace : matchPeopleSubSpaces) {
             List<Booking> bookings = bookingRepository.findBySubSpaceIdAndStatusNotDone(subSpace.getId(), EnumUtils.getEnum(BookingStatus.class, "PENDING"),
                     EnumUtils.getEnum(BookingStatus.class, "BOOKED"));
             if(CollectionUtils.isEmpty(bookings)) {
-                return subSpace;
+                subSpaces.add(subSpace);
+                continue;
             }
-            List<Boolean> checkOverLap = new ArrayList<>();
+            List<Boolean> checkNotOverLap = new ArrayList<>();
             for(Booking booking : bookings) {
                 Date s1 = booking.getStartDate();
                 Date e1 = booking.getEndDate();
@@ -672,19 +674,17 @@ public class SpaceService implements ISpaceService {
                         s1.before(e2) && e1.after(e2) ||
                         s1.before(s2) && e1.after(e2) ||
                         s1.after(s2) && e1.before(e2) ) {
-                    checkOverLap.add(false);
-                    System.out.println("They overlap");
+                    checkNotOverLap.add(false);
                 } else {
-                    checkOverLap.add(true);
-                    System.out.println("They don't overlap");
+                    checkNotOverLap.add(true);
                 }
             }
 
-            if(checkOverLap.stream().allMatch(x -> x == true)) {
-                return subSpace;
+            if(checkNotOverLap.stream().allMatch(x -> x == true)) {
+                subSpaces.add(subSpace);
             }
         }
-        return null;
+        return subSpaces;
     }
 }
 
