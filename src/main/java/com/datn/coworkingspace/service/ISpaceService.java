@@ -59,5 +59,5 @@ public interface ISpaceService {
 
     MessageResponse processExpiredSpace();
 
-    SubSpace findMatchSpace(MatchSubSpaceDTO matchSubSpaceDTO);
+    List<SubSpace> findMatchSpace(MatchSubSpaceDTO matchSubSpaceDTO);
 }

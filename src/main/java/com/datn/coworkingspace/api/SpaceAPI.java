@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -250,13 +251,13 @@ public class SpaceAPI {
         if(bindingResult.hasErrors()){
             return new ResponseEntity<>(new MessageResponse("Invalid value for find match sup space", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
-        SubSpace subSpace = spaceService.findMatchSpace(matchSubSpaceDTO);
+        List<SubSpace> subSpaces = spaceService.findMatchSpace(matchSubSpaceDTO);
 
-        if(subSpace == null) {
+        if(CollectionUtils.isEmpty(subSpaces)) {
             MessageResponse messageResponse = new MessageResponse("Don't match any sub space", HttpStatus.NOT_FOUND, LocalDateTime.now());
             return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
         }
 
-        return new ResponseEntity<>(subSpace, HttpStatus.OK);
+        return new ResponseEntity<>(subSpaces, HttpStatus.OK);
     }
 }
