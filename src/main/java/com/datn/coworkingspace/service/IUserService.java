@@ -5,6 +5,7 @@ import com.datn.coworkingspace.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
@@ -17,9 +18,9 @@ public interface IUserService extends UserDetailsService {
     EmployeeDTO findByIdEmployeeDto(Long theId);
 
 
-    MessageResponse createEmployee(EmployeeDTO theEmployee);
+    MessageResponse createEmployee(EmployeeDTO theEmployee, MultipartFile file);
 
-    MessageResponse updateEmployee(Long theId, EmployeeDTO theEmployee);
+    MessageResponse updateEmployee(Long theId, EmployeeDTO theEmployee, MultipartFile file);
 
     void deleteEmployee(Long theId);
 
@@ -42,7 +43,7 @@ public interface IUserService extends UserDetailsService {
 
     MessageResponse createCustomer(CustomerDTO theCustomer);
 
-    MessageResponse updateCustomer(Long theId, CustomerDTO theCustomer);
+    MessageResponse updateCustomer(Long theId, CustomerDTO theCustomer, MultipartFile file);
 
     void deleteCustomer(Long theId);
 

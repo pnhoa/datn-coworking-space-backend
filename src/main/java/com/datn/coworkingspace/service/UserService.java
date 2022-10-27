@@ -10,8 +10,11 @@ import com.datn.coworkingspace.mapper.UserMapper;
 import com.datn.coworkingspace.repository.PasswordResetTokenRepository;
 import com.datn.coworkingspace.repository.RoleRepository;
 import com.datn.coworkingspace.repository.UserRepository;
+import com.datn.coworkingspace.utils.FileUtils;
 import com.datn.coworkingspace.utils.UserDetailsImpl;
 import net.bytebuddy.utility.RandomString;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,6 +29,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -56,6 +60,9 @@ public class UserService implements IUserService {
 
     @Value("${bezkoder.app.jwtResetExpirationMs}")
     private Long resetTokenDurationMs;
+
+    @Autowired
+    private StorageService storageService;
 
     @Autowired
     public void setPasswordEncoder(BCryptPasswordEncoder passwordEncoder) {
@@ -95,7 +102,7 @@ public class UserService implements IUserService {
 
 
     @Override
-    public MessageResponse createEmployee(EmployeeDTO theEmployeeDto) {
+    public MessageResponse createEmployee(EmployeeDTO theEmployeeDto, MultipartFile file) {
 
         Boolean existEmployee = userRepository.existsByUserName(theEmployeeDto.getUserName());
 
@@ -112,8 +119,9 @@ public class UserService implements IUserService {
             theEmployee.setPhoneNumber(theEmployeeDto.getPhoneNumber());
             theEmployee.setAddress(theEmployeeDto.getAddress());
             theEmployee.setGender(theEmployeeDto.getGender());
-            if(theEmployeeDto.getProfilePicture() != null ) {
-                theEmployee.setProfilePicture(theEmployeeDto.getProfilePicture());
+            if(file != null && FileUtils.checkImageFile(file.getOriginalFilename()) ) {
+                String profilePicture = storageService.uploadFile(file, FileUtils.generateProfileUUID());
+                theEmployee.setProfilePicture(profilePicture.replace(" ", ""));
             }
             theEmployee.setEnabled(1);
             theEmployee.setAccCustomer(false);
@@ -140,7 +148,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public MessageResponse updateEmployee(Long theId, EmployeeDTO theEmployeeDto) {
+    public MessageResponse updateEmployee(Long theId, EmployeeDTO theEmployeeDto, MultipartFile file) {
         Optional<User> theEmployee = userRepository.findById(theId);
 
         if(!theEmployee.isPresent()){
@@ -153,8 +161,9 @@ public class UserService implements IUserService {
             theEmployee.get().setPhoneNumber(theEmployeeDto.getPhoneNumber());
             theEmployee.get().setAddress(theEmployeeDto.getAddress());
             theEmployee.get().setGender(theEmployeeDto.getGender());
-            if(theEmployeeDto.getProfilePicture() != null ) {
-                theEmployee.get().setProfilePicture(theEmployeeDto.getProfilePicture());
+            if(file != null && FileUtils.checkImageFile(file.getOriginalFilename())) {
+                String profilePicture = storageService.uploadFile(file, FileUtils.generateProfileUUID());
+                theEmployee.get().setProfilePicture(profilePicture.replace(" ", ""));
             }
             theEmployee.get().setAccCustomer(false);
 
@@ -291,7 +300,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public MessageResponse updateCustomer(Long theId, CustomerDTO theCustomerDto) {
+    public MessageResponse updateCustomer(Long theId, CustomerDTO theCustomerDto, MultipartFile file) {
         Optional<User> theCustomer = userRepository.findByIdCustomer(theId);
 
         if(!theCustomer.isPresent()){
@@ -304,12 +313,20 @@ public class UserService implements IUserService {
             theCustomer.get().setPhoneNumber(theCustomerDto.getPhoneNumber());
             theCustomer.get().setAddress(theCustomerDto.getAddress());
             theCustomer.get().setGender(theCustomerDto.getGender());
-            if(theCustomerDto.getProfilePicture() != null) {
-                theCustomer.get().setProfilePicture(theCustomerDto.getProfilePicture());
+            String oldProfilePicture = null;
+            if(file != null && FileUtils.checkImageFile(file.getOriginalFilename())) {
+                String profilePicture = storageService.uploadFile(file, FileUtils.generateProfileUUID());
+                oldProfilePicture = theCustomer.get().getProfilePicture();
+                theCustomer.get().setProfilePicture(profilePicture.replace(" ", ""));
             }
             theCustomer.get().setAccCustomer(true);
 
             userRepository.save(theCustomer.get());
+            if(StringUtils.isNoneBlank(oldProfilePicture)) {
+                String fileName = FilenameUtils.getName(oldProfilePicture);
+                //storageService.deleteFile(fileName);
+            }
+
         }
 
         return new MessageResponse("Updated customer successfully!", HttpStatus.OK, LocalDateTime.now());

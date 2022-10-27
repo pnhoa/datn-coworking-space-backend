@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -69,26 +71,18 @@ public class CustomerAPI {
         return new ResponseEntity<>(theCustomer, HttpStatus.OK);
     }
 
-    @PostMapping("")
-    public ResponseEntity<MessageResponse> createCustomer(@Valid @RequestBody CustomerDTO theCustomerDto, BindingResult theBindingResult){
-
-        if(theBindingResult.hasErrors()){
-            return new ResponseEntity<MessageResponse>(new MessageResponse("Invalid value for create customer", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
-        }
-
-        MessageResponse messageResponse = customerService.createCustomer(theCustomerDto);
-        return new ResponseEntity<MessageResponse>(messageResponse, messageResponse.getStatus());
-    }
-
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MessageResponse> updateCustomer(@PathVariable("id") Long theId,
-                                                          @Validated(OnUpdate.class) @RequestBody CustomerDTO theCustomerDto, BindingResult bindingResult){
+                                                          @Validated(OnUpdate.class) @RequestPart(value = "theCustomerDto") CustomerDTO theCustomerDto,
+                                                          @RequestPart(value = "file", required = false) MultipartFile file, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return new ResponseEntity<MessageResponse>(new MessageResponse("Invalid value for update customer", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
 
-        MessageResponse messageResponse = customerService.updateCustomer(theId, theCustomerDto);
+        MessageResponse messageResponse = customerService.updateCustomer(theId, theCustomerDto, file);
         return new ResponseEntity<MessageResponse>(messageResponse, messageResponse.getStatus());
     }
 

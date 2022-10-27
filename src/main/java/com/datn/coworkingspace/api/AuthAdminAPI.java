@@ -76,29 +76,29 @@ public class AuthAdminAPI {
                 employeeDetails.getEmail()));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerEmployee(@Valid @RequestBody EmployeeDTO employeeDto, BindingResult bindingResult){
-
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<>(new MessageResponse("Invalid value for create employee", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
-        }
-
-        if(employeeService.existsByUserName(employeeDto.getUserName())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
-
-        }
-
-        if(employeeService.existsByEmail(employeeDto.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
-
-        }
-
-
-        MessageResponse messageResponse =  employeeService.createEmployee(employeeDto);
-
-        return  new ResponseEntity<>(messageResponse, messageResponse.getStatus());
-
-    }
+//    @PostMapping("/signup")
+//    public ResponseEntity<?> registerEmployee(@Valid @RequestBody EmployeeDTO employeeDto, BindingResult bindingResult){
+//
+//        if(bindingResult.hasErrors()){
+//            return new ResponseEntity<>(new MessageResponse("Invalid value for create employee", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
+//        }
+//
+//        if(employeeService.existsByUserName(employeeDto.getUserName())) {
+//            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+//
+//        }
+//
+//        if(employeeService.existsByEmail(employeeDto.getEmail())) {
+//            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+//
+//        }
+//
+//
+//        MessageResponse messageResponse =  employeeService.createEmployee(employeeDto);
+//
+//        return  new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+//
+//    }
 
     @PostMapping("refreshtoken")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request, BindingResult bindingResult){

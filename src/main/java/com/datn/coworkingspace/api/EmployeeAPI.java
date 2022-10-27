@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -64,26 +66,32 @@ public class EmployeeAPI {
         return new ResponseEntity<>(theEmployee, HttpStatus.OK);
     }
 
-    @PostMapping("")
-    public ResponseEntity<MessageResponse> createEmployee(@Valid @RequestBody EmployeeDTO theEmployeeDto, BindingResult theBindingResult){
+    @PostMapping(value = "",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<MessageResponse> createEmployee(@Valid @RequestPart(value = "theEmployeeDto") EmployeeDTO theEmployeeDto,
+                                                          @RequestPart(value = "file", required = false) MultipartFile file, BindingResult theBindingResult){
 
         if(theBindingResult.hasErrors()){
             return new ResponseEntity<MessageResponse>(new MessageResponse("Invalid value for create employee", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
 
-        MessageResponse messageResponse = employeeService.createEmployee(theEmployeeDto);
+        MessageResponse messageResponse = employeeService.createEmployee(theEmployeeDto, file);
         return new ResponseEntity<MessageResponse>(messageResponse, messageResponse.getStatus());
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<MessageResponse> updateEmployee(@PathVariable("id") Long theId,
-                                                          @Validated(OnUpdate.class)  @RequestBody EmployeeDTO theEmployeeDto, BindingResult bindingResult){
+                                                          @Validated(OnUpdate.class)  @RequestPart(value = "theEmployeeDto")  EmployeeDTO theEmployeeDto,
+                                                          @RequestPart(value = "file", required = false) MultipartFile file, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return new ResponseEntity<MessageResponse>(new MessageResponse("Invalid value for update employee", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
 
-        MessageResponse messageResponse = employeeService.updateEmployee(theId, theEmployeeDto);
+        MessageResponse messageResponse = employeeService.updateEmployee(theId, theEmployeeDto, file);
         return new ResponseEntity<MessageResponse>(messageResponse, messageResponse.getStatus());
     }
 
