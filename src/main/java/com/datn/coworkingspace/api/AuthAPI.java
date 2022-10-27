@@ -6,10 +6,13 @@ import com.datn.coworkingspace.exception.TokenRefreshException;
 import com.datn.coworkingspace.service.IBlacklistService;
 import com.datn.coworkingspace.service.IRefreshTokenService;
 import com.datn.coworkingspace.service.IUserService;
+import com.datn.coworkingspace.service.StorageService;
+import com.datn.coworkingspace.utils.FileUtils;
 import com.datn.coworkingspace.utils.JwtUtils;
 import com.datn.coworkingspace.utils.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +20,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -42,6 +46,9 @@ public class AuthAPI {
 
     @Autowired
     private IBlacklistService blacklistService;
+
+    @Autowired
+    private StorageService storageService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateCustomer(@Valid @RequestBody LoginDTO loginDto, BindingResult bindingResult){
@@ -75,12 +82,16 @@ public class AuthAPI {
                 customerDetails.getEmail()));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerCustomer(@Valid @RequestBody CustomerDTO customerDto, BindingResult bindingResult){
+    @PostMapping(value = "/signup",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> registerCustomer(@Valid @RequestPart(value = "customerDto") CustomerDTO customerDto,
+                                              @RequestPart(value = "file", required = false) MultipartFile file, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
             return new ResponseEntity<>(new MessageResponse("Invalid value for create customer", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
+
         if(customerService.existsByUserName(customerDto.getUserName())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
 
@@ -88,6 +99,16 @@ public class AuthAPI {
 
         if(customerService.existsByEmail(customerDto.getEmail())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+        }
+
+        if(file != null) {
+            if(FileUtils.checkImageFile(file.getOriginalFilename())) {
+                String profilePicture = storageService.uploadFile(file, FileUtils.generateProfileUUID());
+                customerDto.setProfilePicture(profilePicture.replace(" ", ""));
+            } else {
+                customerDto.setProfilePicture("");
+            }
+
         }
 
         MessageResponse messageResponse = customerService.createCustomer(customerDto);
