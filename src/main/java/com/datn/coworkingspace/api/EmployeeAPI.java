@@ -76,6 +76,16 @@ public class EmployeeAPI {
             return new ResponseEntity<MessageResponse>(new MessageResponse("Invalid value for create employee", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
 
+        if(employeeService.existsByUserName(theEmployeeDto.getUserName())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+
+        }
+
+        if(employeeService.existsByEmail(theEmployeeDto.getEmail())) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
+
+        }
+
         MessageResponse messageResponse = employeeService.createEmployee(theEmployeeDto, file);
         return new ResponseEntity<MessageResponse>(messageResponse, messageResponse.getStatus());
     }

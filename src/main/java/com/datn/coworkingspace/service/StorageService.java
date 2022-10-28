@@ -31,6 +31,7 @@ public class StorageService {
     public String uploadFile(MultipartFile file, String imageCategory) {
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = imageCategory + "_" + file.getOriginalFilename();
+        fileName = fileName.replace(" ", "");
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
         return baseUrl + fileName;
