@@ -5,12 +5,14 @@ import com.datn.coworkingspace.dto.MessageResponse;
 import com.datn.coworkingspace.entity.Category;
 import com.datn.coworkingspace.exception.ResourceNotFoundException;
 import com.datn.coworkingspace.repository.CategoryRepository;
+import com.datn.coworkingspace.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -23,6 +25,9 @@ public class CategoryService implements ICategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private StorageService storageService;
 
     @Override
     public List<Category> findAll() {
@@ -47,7 +52,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public MessageResponse createCategory(CategoryDTO theCategoryDto) {
+    public MessageResponse createCategory(CategoryDTO theCategoryDto, MultipartFile file) {
 
         Category theCategory = new Category();
 
@@ -55,7 +60,10 @@ public class CategoryService implements ICategoryService {
         theCategory.setCreatedBy(theCategoryDto.getCreatedBy());
         theCategory.setName(theCategoryDto.getName());
         theCategory.setDescription(theCategoryDto.getDescription());
-        theCategory.setThumbnail(theCategoryDto.getThumbnail());
+        if(file != null && FileUtils.checkImageFile(file.getOriginalFilename()) ) {
+            String thumbnail= storageService.uploadFile(file, FileUtils.generateCategoryUUID());
+            theCategory.setThumbnail(thumbnail.replace(" ", ""));
+        }
 
         categoryRepository.save(theCategory);
 
@@ -63,7 +71,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public MessageResponse updateCategory(Long theId, CategoryDTO theCategoryDto) {
+    public MessageResponse updateCategory(Long theId, CategoryDTO theCategoryDto, MultipartFile file) {
         Optional<Category> theCategory = categoryRepository.findById(theId);
 
         if(!theCategory.isPresent()) {
@@ -80,7 +88,10 @@ public class CategoryService implements ICategoryService {
             theCategory.get().setModifiedBy(theCategoryDto.getModifiedBy());
             theCategory.get().setName(theCategoryDto.getName());
             theCategory.get().setDescription(theCategoryDto.getDescription());
-            theCategory.get().setThumbnail(theCategoryDto.getThumbnail());
+            if(file != null && FileUtils.checkImageFile(file.getOriginalFilename()) ) {
+                String thumbnail= storageService.uploadFile(file, FileUtils.generateCategoryUUID());
+                theCategory.get().setThumbnail(thumbnail.replace(" ", ""));
+            }
 
             categoryRepository.save(theCategory.get());
         }

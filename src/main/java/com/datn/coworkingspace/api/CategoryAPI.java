@@ -1,6 +1,7 @@
 package com.datn.coworkingspace.api;
 
 import com.datn.coworkingspace.dto.CategoryDTO;
+import com.datn.coworkingspace.dto.EmployeeDTO;
 import com.datn.coworkingspace.dto.MessageResponse;
 import com.datn.coworkingspace.entity.Category;
 import com.datn.coworkingspace.service.ICategoryService;
@@ -9,9 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -56,31 +59,37 @@ public class CategoryAPI {
         return new ResponseEntity<>(theCategory, HttpStatus.OK);
     }
 
-    @PostMapping("")
-    public ResponseEntity<MessageResponse> createCategory(@Valid @RequestBody CategoryDTO theCategoryDto, BindingResult theBindingResult){
+    @PostMapping(value = "",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createCategory(@Valid @RequestPart(value = "theCategoryDto") CategoryDTO theCategoryDto,
+                                                          @RequestPart(value = "file", required = false) MultipartFile file, BindingResult theBindingResult){
 
         if(theBindingResult.hasErrors()){
-            return new ResponseEntity<MessageResponse>(new MessageResponse("Invalid value for create category", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MessageResponse("Invalid value for create category", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
 
         if(categoryService.existsByName(theCategoryDto.getName())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Category name is already use.", HttpStatus.BAD_REQUEST, LocalDateTime.now()));
         }
 
-        MessageResponse messageResponse = categoryService.createCategory(theCategoryDto);
-        return new ResponseEntity<MessageResponse>(messageResponse, HttpStatus.CREATED);
+        MessageResponse messageResponse = categoryService.createCategory(theCategoryDto, file);
+        return new ResponseEntity<>(messageResponse, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MessageResponse> updateCategory(@PathVariable("id") Long theId,
-                                                         @Valid @RequestBody CategoryDTO theCategoryDto, BindingResult bindingResult){
+    @PutMapping(value = "/{id}",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> updateCategory(@PathVariable("id") Long theId,
+                                                          @Valid @RequestPart(value = "theCategoryDto") CategoryDTO theCategoryDto,
+                                                          @RequestPart(value = "file", required = false) MultipartFile file, BindingResult bindingResult){
 
         if(bindingResult.hasErrors()){
-            return new ResponseEntity<MessageResponse>(new MessageResponse("Invalid value for update category", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MessageResponse("Invalid value for update category", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
 
-        MessageResponse messageResponse = categoryService.updateCategory(theId, theCategoryDto);
-        return new ResponseEntity<MessageResponse>(messageResponse, HttpStatus.OK);
+        MessageResponse messageResponse = categoryService.updateCategory(theId, theCategoryDto, file);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
