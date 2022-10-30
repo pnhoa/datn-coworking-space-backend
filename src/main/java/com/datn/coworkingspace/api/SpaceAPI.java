@@ -5,15 +5,18 @@ import com.datn.coworkingspace.entity.Space;
 import com.datn.coworkingspace.entity.SubSpace;
 import com.datn.coworkingspace.service.ISpaceService;
 import com.datn.coworkingspace.utils.CommonUtils;
+import com.datn.coworkingspace.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -93,14 +96,22 @@ public class SpaceAPI {
         return new ResponseEntity<>(theSpace, HttpStatus.OK);
     }
 
-    @PostMapping("")
-    public ResponseEntity<?> createSpace(@Valid @RequestBody SpaceDTO theSpaceDto, BindingResult theBindingResult){
+    @PostMapping(value = "",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createSpace(@Valid @RequestPart(value = "theSpaceDto") SpaceDTO theSpaceDto,
+                                         @RequestPart(value = "largeFile") MultipartFile largeFile,
+                                         @RequestPart(value = "files", required = false) MultipartFile[] files,
+                                         @RequestPart(value = "subSpaceFiles", required = false) MultipartFile[] subSpaceFiles, BindingResult theBindingResult) {
 
         if(theBindingResult.hasErrors()){
             return new ResponseEntity<>(new MessageResponse("Invalid value for create space", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
+        if(largeFile == null || !FileUtils.checkImageFile(largeFile.getOriginalFilename()) || (files != null && files.length > 5)) {
+            return new ResponseEntity<>(new MessageResponse("Invalid value for create space", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
+        }
 
-        MessageResponse messageResponse = spaceService.createSpace(theSpaceDto);
+        MessageResponse messageResponse = spaceService.createSpace(theSpaceDto, largeFile, files, subSpaceFiles);
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
 

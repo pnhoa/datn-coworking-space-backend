@@ -5,6 +5,7 @@ import com.datn.coworkingspace.entity.Space;
 import com.datn.coworkingspace.entity.SubSpace;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface ISpaceService {
 
     Space findById(Long theId);
 
-    MessageResponse createSpace(SpaceDTO theSpaceDto);
+    MessageResponse createSpace(SpaceDTO theSpaceDto, MultipartFile largeFile, MultipartFile[] files, MultipartFile[] subSpaceFiles);
 
     MessageResponse updateSpace(Long theId, SpaceDTO theSpaceDto);
 

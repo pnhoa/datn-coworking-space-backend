@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -74,7 +75,12 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
 
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Object> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex){
+        MessageResponse messageResponse = new MessageResponse("Maximum upload size exceeded, the request was rejected because its size exceeds the configured maximum.", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 
+        return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception ex){
