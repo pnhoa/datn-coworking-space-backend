@@ -8,6 +8,7 @@ import com.datn.coworkingspace.exception.ResourceNotFoundException;
 import com.datn.coworkingspace.mapper.SpaceMapper;
 import com.datn.coworkingspace.repository.*;
 import com.datn.coworkingspace.utils.CommonUtils;
+import com.datn.coworkingspace.utils.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
@@ -69,6 +71,9 @@ public class SpaceService implements ISpaceService {
     @Autowired
     private ModelMapper mapper;
 
+    @Autowired
+    private StorageService storageService;
+
     @Override
     public List<Space> findAll() {
         return null;
@@ -96,7 +101,7 @@ public class SpaceService implements ISpaceService {
 
     @Override
     @Transactional
-    public MessageResponse createSpace(SpaceDTO theSpaceDto)  {
+    public MessageResponse createSpace(SpaceDTO theSpaceDto, MultipartFile largeFile, MultipartFile[] files, MultipartFile[] subSpaceFiles)  {
 
         Optional<User> user = userRepository.findByIdCustomer(theSpaceDto.getUserId());
         if(!user.isPresent()) {
@@ -114,7 +119,8 @@ public class SpaceService implements ISpaceService {
         space.setName(theSpaceDto.getName());
         space.setPrice(theSpaceDto.getPrice());
         space.setUnit(theSpaceDto.getUnit());
-        space.setLargeImage(theSpaceDto.getLargeImage());
+        String imageUrl = storageService.uploadFile(largeFile, FileUtils.generateSpaceUUID());
+        space.setLargeImage(imageUrl.replace(" ", ""));
         space.setMinPrice(theSpaceDto.getMinPrice());
         space.setMaxPrice(theSpaceDto.getMaxPrice());
         space.setNumberOfRoom(theSpaceDto.getNumberOfRoom());
@@ -193,6 +199,7 @@ public class SpaceService implements ISpaceService {
 
                                 subSpace.setTitle(subSpaceDTO.getTitle());
                                 subSpace.setPrice(subSpaceDTO.getPrice());
+                                //TODO get name of image by titleService titlePackage titleSubSpace
                                 subSpace.setImageUrl(subSpaceDTO.getImageUrl());
                                 subSpace.setNumberOfPeople(subSpaceDTO.getNumberOfPeople());
                                 subSpace.setStatus(subSpaceDTO.isStatus());
@@ -221,12 +228,13 @@ public class SpaceService implements ISpaceService {
             space.setServiceSpaces(serviceSpaces);
         }
 
-        if(!CollectionUtils.isEmpty(theSpaceDto.getImageUrls())) {
+        if(files != null && files.length > 0) {
             List<Image> images = new ArrayList<>();
-            for(String imageUrl : theSpaceDto.getImageUrls()) {
+            for(MultipartFile file: files) {
                 Image image = new Image();
-                image.setFileName(imageUrl);
-                image.setUrl(imageUrl);
+                String fileUrl = storageService.uploadFile(file, FileUtils.generateSpaceUUID()).replace(" ", "");
+                image.setFileName(fileUrl);
+                image.setUrl(fileUrl);
                 image.setSpace(space);
 
                 images.add(image);

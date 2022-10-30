@@ -21,7 +21,6 @@ public class SpaceDTO extends AbstractDTO {
     @NotNull(message = "Please enter unit(day/month/...)")
     private String unit;
 
-    @NotNull(message = "Please upload large image")
     private String largeImage;
 
     private BigDecimal minPrice;
