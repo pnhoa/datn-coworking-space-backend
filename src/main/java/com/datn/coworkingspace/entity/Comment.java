@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comment")
-@JsonIgnoreProperties({"space", "user"})
+@JsonIgnoreProperties({"space"})
 public class Comment extends BaseEntity {
 
     @NotBlank
@@ -19,11 +19,11 @@ public class Comment extends BaseEntity {
     private long rate;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "space_id")
     private Space space;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
