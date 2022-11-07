@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -265,8 +266,7 @@ public class SpaceAPI {
         List<SubSpace> subSpaces = spaceService.findMatchSpace(matchSubSpaceDTO);
 
         if(CollectionUtils.isEmpty(subSpaces)) {
-            MessageResponse messageResponse = new MessageResponse("Don't match any sub space", HttpStatus.NOT_FOUND, LocalDateTime.now());
-            return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(subSpaces, HttpStatus.OK);

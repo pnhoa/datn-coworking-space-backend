@@ -32,7 +32,7 @@ public class BookingAPI {
                                     @RequestParam(name = "status", required = false) String status,
                                     @RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "20") int limit,
-                                    @RequestParam(defaultValue = "id,ASC") String[] sort){
+                                    @RequestParam(defaultValue = "id,DESC") String[] sort){
 
         try {
 
