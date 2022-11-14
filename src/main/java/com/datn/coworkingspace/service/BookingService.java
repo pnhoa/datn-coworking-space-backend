@@ -80,10 +80,6 @@ public class BookingService implements  IBookingService{
             return new MessageResponse("Not found sub space with ID=" + theBookingDto.getSubSpaceId(), HttpStatus.NOT_FOUND, LocalDateTime.now());
         }
 
-        if(!subSpace.get().isStatus()) {
-            return new MessageResponse("Sub Space not available", HttpStatus.BAD_REQUEST, LocalDateTime.now());
-        }
-
         if(subSpace.get().getNumberOfPeople() < theBookingDto.getNumberOfPeople()) {
             return new MessageResponse("Maximum number of people is " + subSpace.get().getNumberOfPeople(), HttpStatus.BAD_REQUEST, LocalDateTime.now());
         }
