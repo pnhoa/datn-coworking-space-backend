@@ -199,10 +199,25 @@ public class BookingService implements  IBookingService{
         return new MessageResponse("Update booking status successfully.", HttpStatus.OK, LocalDateTime.now());
     }
 
+    @Override
+    public Page<Booking> findByCustomerIdPageAndSort(Long customerId, Pageable pagingSort) {
+        Optional<User> customer = userRepository.findByIdCustomer(customerId);
+
+        if(!customer.isPresent()){
+            throw  new ResourceNotFoundException("Not found customer with ID= " + customerId);
+        } else {
+            Page<Booking> bookingPage = userRepository.findByCustomerId(customerId,pagingSort);
+
+            return getBookings(bookingPage);
+        }
+    }
+
     private Page<Booking> getBookings(Page<Booking> bookingPage) {
         for(Booking booking : bookingPage.getContent()) {
             booking.setUserIds(booking.getUser().getId());
             booking.setSubSpaceIds(booking.getSubSpace().getId());
+            booking.setSubSpaceTitle(booking.getSubSpace().getTitle());
+            booking.setSubSpaceImage(booking.getSubSpace().getImageUrl());
         }
         return  bookingPage;
     }
