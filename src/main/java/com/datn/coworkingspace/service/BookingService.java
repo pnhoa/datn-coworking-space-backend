@@ -206,7 +206,7 @@ public class BookingService implements  IBookingService{
         if(!customer.isPresent()){
             throw  new ResourceNotFoundException("Not found customer with ID= " + customerId);
         } else {
-            Page<Booking> bookingPage = userRepository.findByCustomerId(customerId,pagingSort);
+            Page<Booking> bookingPage = bookingRepository.findByUserId(customerId,pagingSort);
 
             return getBookings(bookingPage);
         }

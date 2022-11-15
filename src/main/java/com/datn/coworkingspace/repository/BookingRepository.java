@@ -14,4 +14,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("SELECT b from Booking b WHERE b.subSpace.id=?1 AND (b.status = ?2 OR b.status = ?3) ")
     List<Booking> findBySubSpaceIdAndStatusNotDone(Long subSpaceId, BookingStatus pending, BookingStatus booked);
+
+    Page<Booking> findByUserId(Long customerId, Pageable pagingSort);
 }
