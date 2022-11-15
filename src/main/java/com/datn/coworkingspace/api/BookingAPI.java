@@ -58,6 +58,22 @@ public class BookingAPI {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
+    @GetMapping("/customers/{customerId}")
+    public ResponseEntity<?> findAllBookingsByCustomer(@PathVariable("customerId") Long customerId,
+                                                    @RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "20") int limit,
+                                                    @RequestParam(defaultValue = "id,ASC") String[] sort){
+        try {
+            Pageable pagingSort = CommonUtils.sortItem(page, limit, sort);
+
+            Page<Booking> bookingPage = bookingService.findByCustomerIdPageAndSort(customerId, pagingSort);
+
+            return new ResponseEntity<>(bookingPage, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(new MessageResponse("NOT_FOUND", HttpStatus.NOT_FOUND, LocalDateTime.now()), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping("")
     public ResponseEntity<MessageResponse> createBooking(@Valid @RequestBody BookingDTO theBookingDto, BindingResult theBindingResult){
 

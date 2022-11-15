@@ -61,6 +61,14 @@ public class Booking extends BaseEntity {
     @JsonProperty(value = "subSpaceId")
     private Long subSpaceIds;
 
+    @Transient
+    @JsonProperty(value = "subSpaceImage")
+    private String subSpaceImage;
+
+    @Transient
+    @JsonProperty(value = "subSpaceTitle")
+    private String subSpaceTitle;
+
     @Column(name = "space_id")
     private Long spaceId;
 
@@ -130,6 +138,14 @@ public class Booking extends BaseEntity {
     public BookingStatus getStatus() { return status; }
 
     public void setStatus(BookingStatus status) { this.status = status; }
+
+    public String getSubSpaceImage() { return subSpaceImage; }
+
+    public void setSubSpaceImage(String subSpaceImage) { this.subSpaceImage = subSpaceImage; }
+
+    public String getSubSpaceTitle() { return subSpaceTitle; }
+
+    public void setSubSpaceTitle(String subSpaceTitle) { this.subSpaceTitle = subSpaceTitle; }
 
     public Booking() {
     }

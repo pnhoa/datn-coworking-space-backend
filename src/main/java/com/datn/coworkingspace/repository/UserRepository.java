@@ -1,5 +1,6 @@
 package com.datn.coworkingspace.repository;
 
+import com.datn.coworkingspace.entity.Booking;
 import com.datn.coworkingspace.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,4 +47,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Page<User> findByEnabledAndIsAccCustomer(Integer enabled, Boolean b, Pageable pagingSort);
 
     Page<User> findByUserNameContainingAndEnabledAndIsAccCustomer(String userName, Integer enabled, Boolean isAccCustomer, Pageable pageable);
+
+    Page<Booking> findByCustomerId(Long customerId, Pageable pagingSort);
 }
