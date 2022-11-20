@@ -61,4 +61,6 @@ public interface ISpaceService {
     MessageResponse processExpiredSpace();
 
     List<SubSpace> findMatchSpace(MatchSubSpaceDTO matchSubSpaceDTO);
+
+    Page<SpaceOverviewDTO> findAllOverviewByCustomerIdPageAndSort(Long customerId, Pageable pagingSort);
 }
