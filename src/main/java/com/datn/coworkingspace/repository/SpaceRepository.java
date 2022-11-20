@@ -78,4 +78,5 @@ public interface SpaceRepository extends JpaRepository<Space, Long> {
 
     Page<Space> findByNameContainingIgnoreCaseOrSpaceAddress_CountryContainingIgnoreCaseOrSpaceAddress_ProvinceContainingIgnoreCaseOrSpaceAddress_DistrictContainingIgnoreCase(String spaceName, String country, String province, String district, Pageable pagingSort);
 
+    Page<Space> findByUserId(Long customerId, Pageable pagingSort);
 }

@@ -410,6 +410,13 @@ public class SpaceService implements ISpaceService {
         return null;
     }
 
+
+    @Override
+    public Page<SpaceOverviewDTO> findAllOverviewByCustomerIdPageAndSort(Long customerId, Pageable pagingSort) {
+        Page<SpaceOverviewDTO> spacePage =  spaceRepository.findByUserId(customerId, pagingSort).map(this::spaceToSpaceOverviewDTO);
+        return  spacePage;
+    }
+
     @Override
     public Page<SpaceOverviewDTO> findAllOverviewPageAndSort(Pageable pagingSort) {
         Page<SpaceOverviewDTO> spacePage =  spaceRepository.findAll(pagingSort).map(this::spaceToSpaceOverviewDTO);

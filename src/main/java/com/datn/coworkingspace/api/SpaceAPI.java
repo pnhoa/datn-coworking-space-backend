@@ -90,6 +90,26 @@ public class SpaceAPI {
         }
     }
 
+    @GetMapping("/customers/{customerId}")
+    public ResponseEntity<?> findAllOverviewByCustomerId(
+                                              @PathVariable("customerId") Long customerId,
+                                              @RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "20") int limit,
+                                              @RequestParam(defaultValue = "id,ASC") String[] sort){
+
+        try {
+
+            Pageable pagingSort = CommonUtils.sortItem(page, limit, sort);
+            Page<SpaceOverviewDTO> spacePage =  spaceService.findAllOverviewByCustomerIdPageAndSort(customerId, pagingSort);
+
+
+            return new ResponseEntity<>(spacePage, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Space> findById(@PathVariable("id") Long theId){
 
