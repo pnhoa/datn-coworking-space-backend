@@ -89,7 +89,7 @@ public class Space extends BaseEntity {
     @JsonIgnoreProperties("space")
     private Set<ServiceSpace> serviceSpaces = new HashSet<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
