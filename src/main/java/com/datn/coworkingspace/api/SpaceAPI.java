@@ -112,7 +112,6 @@ public class SpaceAPI {
 
     @GetMapping("/{id}")
     public ResponseEntity<Space> findById(@PathVariable("id") Long theId){
-
         Space theSpace = spaceService.findById(theId);
         return new ResponseEntity<>(theSpace, HttpStatus.OK);
     }

@@ -9,6 +9,7 @@ import com.datn.coworkingspace.entity.User;
 import com.datn.coworkingspace.exception.ResourceNotFoundException;
 import com.datn.coworkingspace.repository.CommentRepository;
 import com.datn.coworkingspace.repository.SpaceRepository;
+import com.datn.coworkingspace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,31 +22,39 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class CommentService implements ICommentService {
 
     @Autowired
-    private ISpaceService spaceService;
-
-    @Autowired
     private CommentRepository commentRepository;
 
     @Autowired
-    private IUserService customerService;
+    private SpaceRepository spaceRepository;
 
     @Autowired
-    private SpaceRepository spaceRepository;
+    private UserRepository userRepository;
 
 
     @Override
     public MessageResponse createComment(CommentDTO theCommentDTO) {
 
+        Optional<User> userOpt = userRepository.findByIdCustomer(theCommentDTO.getUserId());
+        if(!userOpt.isPresent()) {
+            return new MessageResponse("Not found customer with ID=" + theCommentDTO.getUserId(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+        }
+
+        Optional<Space> spaceOpt = spaceRepository.findById(theCommentDTO.getSpaceId());
+        if(!spaceOpt.isPresent()) {
+            return new MessageResponse("Not found space with ID=" + theCommentDTO.getSpaceId(), HttpStatus.NOT_FOUND, LocalDateTime.now());
+        }
+
         Comment theComment = new Comment();
 
-        Space space = spaceService.findById(theCommentDTO.getSpaceId());
-        User user = customerService.findByIdCustomer(theCommentDTO.getUserId());
+        Space space = spaceOpt.get();
+        User user = userOpt.get();
 
         theComment.setContent(theCommentDTO.getContent());
         theComment.setRate(theCommentDTO.getRate());
@@ -65,8 +74,12 @@ public class CommentService implements ICommentService {
     }
 
     @Override
-    public Page<Comment> findBySpaceIdPageAndSort(Long spaceId, Pageable pagingSort) {
-        Space space = spaceService.findById(spaceId);
+    public Page<Comment> findBySpaceIdPageAndSort(Long spaceId, Pageable pagingSort)  {
+        Optional<Space> spaceOpt = spaceRepository.findById(spaceId);
+        if(!spaceOpt.isPresent()) {
+            throw new ResourceNotFoundException("Not found space with ID= " + spaceId);
+        }
+        Space space = spaceOpt.get();
         Page<Comment> commentPage = commentRepository.findBySpaceId(spaceId, pagingSort);
 
         if (space == null) {
