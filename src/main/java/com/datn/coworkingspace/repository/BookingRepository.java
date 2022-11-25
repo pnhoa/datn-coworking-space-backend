@@ -16,4 +16,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findBySubSpaceIdAndStatusNotDone(Long subSpaceId, BookingStatus pending, BookingStatus booked);
 
     Page<Booking> findByUserId(Long customerId, Pageable pagingSort);
+
+    Page<Booking> findBySpaceOwnerId(Long spaceOwnerId, Pageable pagingSort);
 }
