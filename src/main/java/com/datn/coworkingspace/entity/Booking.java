@@ -75,6 +75,9 @@ public class Booking extends BaseEntity {
     @Column(name = "status")
     private BookingStatus status;
 
+    @Column(name = "space_owner_id")
+    private Long spaceOwnerId;
+
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
@@ -146,6 +149,10 @@ public class Booking extends BaseEntity {
     public String getSubSpaceTitle() { return subSpaceTitle; }
 
     public void setSubSpaceTitle(String subSpaceTitle) { this.subSpaceTitle = subSpaceTitle; }
+
+    public Long getSpaceOwnerId() { return spaceOwnerId; }
+
+    public void setSpaceOwnerId(Long spaceOwnerId) { this.spaceOwnerId = spaceOwnerId; }
 
     public Booking() {
     }

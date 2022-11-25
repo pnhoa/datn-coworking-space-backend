@@ -51,6 +51,31 @@ public class BookingAPI {
         }
     }
 
+    @GetMapping(value = {"/management/{userId}"})
+    public ResponseEntity<?> getAllByOwner(@PathVariable("userId") Long userId,
+                                    @RequestParam(name = "content", required = false) String content,
+                                    @RequestParam(name = "status", required = false) String status,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "20") int limit,
+                                    @RequestParam(defaultValue = "id,DESC") String[] sort){
+
+        try {
+
+            Pageable pagingSort = CommonUtils.sortItem(page, limit, sort);
+            Page<Booking> bookingPage = null;
+
+            if(StringUtils.isBlank(content) && StringUtils.isBlank(status)) {
+                bookingPage = bookingService.findAllByUserIdPageAndSort(userId, pagingSort);
+            } else  {
+                bookingPage = bookingService.findByUserIdAndSearchContentContaining(userId, content, status, pagingSort);
+            }
+
+            return new ResponseEntity<>(bookingPage, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable("id") Long theId){
         Booking booking = bookingService.findById(theId);

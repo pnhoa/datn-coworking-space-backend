@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -105,6 +104,7 @@ public class BookingService implements  IBookingService{
         booking.setSubSpace(subSpace.get());
         booking.setUser(user.get());
         booking.setSpaceId(theBookingDto.getSpaceId());
+        booking.setSpaceOwnerId(space.get().getUser().getId());
 
         bookingRepository.save(booking);
 
@@ -156,8 +156,8 @@ public class BookingService implements  IBookingService{
 
         Optional<User> employee = userRepository.findByIdEmployee(statusDto.getUserId());
 
-        if(!(booking.get().getUser().getId().equals(statusDto.getUserId()) || employee.isPresent())){
-            return new MessageResponse("Only user booking this space or employee change status", HttpStatus.BAD_REQUEST, LocalDateTime.now());
+        if(!(booking.get().getUser().getId().equals(statusDto.getUserId()) || employee.isPresent() || booking.get().getSpaceOwnerId().equals(statusDto.getUserId()))){
+            return new MessageResponse("Only user booking this space or employee, owner change status", HttpStatus.BAD_REQUEST, LocalDateTime.now());
 
         }
 
@@ -209,6 +209,46 @@ public class BookingService implements  IBookingService{
             Page<Booking> bookingPage = bookingRepository.findByUserId(customerId,pagingSort);
 
             return getBookings(bookingPage);
+        }
+    }
+
+    @Override
+    public Page<Booking> findAllByUserIdPageAndSort(Long userId, Pageable pagingSort) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if(!user.isPresent()){
+            throw  new ResourceNotFoundException("Not found user with ID= " + userId);
+        } else {
+            Page<Booking> bookingPage = bookingRepository.findBySpaceOwnerId(userId, pagingSort);
+
+            return getBookings(bookingPage);
+        }
+
+    }
+
+    @Override
+    public Page<Booking> findByUserIdAndSearchContentContaining(Long userId, String content, String status, Pageable pagingSort) {
+        Page<Booking> bookingPage;
+
+        content = content == null ? "" : content;
+        try {
+            if(status == null) {
+                bookingPage = bookingRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCompanyNameContainingIgnoreCaseOrPhoneNumberContainingIgnoreCase(content, content, content, content, pagingSort);
+            } else  {
+                if(EnumUtils.isValidEnum(BookingStatus.class, status)) {
+                    bookingPage = bookingRepository.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCompanyNameContainingIgnoreCaseOrPhoneNumberContainingIgnoreCase(content, content, content, content, pagingSort);
+                    List<Booking> bookings = bookingPage.getContent().stream().filter(x -> x.getSpaceOwnerId().equals(userId))
+                            .filter(x -> x.getStatus().equals(EnumUtils.getEnum(BookingStatus.class, status))).collect(Collectors.toList());
+
+                    bookingPage = new PageImpl<>(bookings, pagingSort, bookings.size());
+                } else {
+                    return new PageImpl<>(new ArrayList<>(), pagingSort, 0);
+                }
+            }
+            return getBookings(bookingPage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new PageImpl<>(new ArrayList<>(), pagingSort, 0);
         }
     }
 

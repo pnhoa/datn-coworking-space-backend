@@ -23,4 +23,8 @@ public interface IBookingService {
     MessageResponse updateStatusBooking(long theId, BookingStatusDTO statusDto);
 
     Page<Booking> findByCustomerIdPageAndSort(Long customerId, Pageable pagingSort);
+
+    Page<Booking> findAllByUserIdPageAndSort(Long userId, Pageable pagingSort);
+
+    Page<Booking> findByUserIdAndSearchContentContaining(Long userId, String content, String status, Pageable pagingSort);
 }
