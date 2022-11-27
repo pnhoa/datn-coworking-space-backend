@@ -2,18 +2,8 @@ pipeline{
     agent any
 
     stages{
-        stage("Git Stage"){
-            steps{
-                echo '============== Git Stage =============='
-                echo 'Git Version:'
-                sh 'git version'
-                sh 'git branch'
-            }
-        }
-
         stage("Build") {
             steps{
-                echo '============== Build Stage "=============='
                 echo 'Java Version:'
                 sh 'java -version'
                 echo 'Maven Version:'
@@ -23,7 +13,6 @@ pipeline{
 
         stage("Docker") {
             steps{ 
-                echo '============== Docker Stage "=============='
                 echo 'Docker -version'
                 sh 'docker version'
             }
@@ -31,17 +20,13 @@ pipeline{
 
         stage("Deploy") {
             steps{ 
-                echo '============== Deploy Stage "=============='
-                echo 'Docker -version'
-                sh 'docker version'
+
             }
         }
 
-        stage("Clean") {
+        stage("Clean Up") {
             steps{ 
-                echo '============== Clean Stage "=============='
-                echo 'Remove source code'
-                sh 'rm -rf'
+                deleteDir()
             }
         }
     }
