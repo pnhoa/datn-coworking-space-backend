@@ -24,11 +24,11 @@ pipeline{
                 echo 'ssh to deploy server'
             }
         }
+    }
 
-        post { 
-            always {
-                deleteDir()
-            }
+    post { 
+        always {
+            deleteDir()
         }
     }
 }
