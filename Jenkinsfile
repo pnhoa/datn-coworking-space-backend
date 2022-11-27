@@ -20,7 +20,7 @@ pipeline{
 
         stage("Deploy") {
             steps{ 
-
+                echo 'ssh to deploy server'
             }
         }
 
