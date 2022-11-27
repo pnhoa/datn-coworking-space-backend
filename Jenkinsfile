@@ -21,6 +21,7 @@ pipeline{
         stage("Deploy") {
             steps{ 
                 echo 'ssh to deploy server'
+                echo 'ssh to deploy server'
             }
         }
 
