@@ -25,8 +25,8 @@ pipeline{
             }
         }
 
-        stage("Clean Up") {
-            steps{ 
+        post { 
+            always {
                 deleteDir()
             }
         }
