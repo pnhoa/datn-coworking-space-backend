@@ -1,11 +1,11 @@
 pipeline{
-    agent none
+    agent any
 
     stages{
         stage("Git Stage"){
             steps{
                 echo '============== Git Stage =============='
-                echo 'git Version:'
+                echo 'Git Version:'
                 sh 'git version'
                 sh 'git branch'
             }
