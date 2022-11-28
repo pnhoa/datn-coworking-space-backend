@@ -18,12 +18,13 @@ pipeline {
 
         stage("Docker") {
             steps{ 
-                sh 'docker version'
-                docker.withRegistry("https://${REGISTRY_HOST}", REGISTRY_CREDENTIAL) {
-                    def image = docker.build("${REGISTRY_HOST}/${REGISTRY_REPOSITORY}:latest",".")
-                    image.push()
+                sh 'docker version'  
+                script { 
+                    docker.withRegistry("https://${REGISTRY_HOST}", REGISTRY_CREDENTIAL) {
+                        def image = docker.build("${REGISTRY_HOST}/${REGISTRY_REPOSITORY}:latest",".")
+                        image.push()
+                    }   
                 }
-                    
             }
         }
 
