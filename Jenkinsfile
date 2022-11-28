@@ -1,18 +1,16 @@
-pipeline{
+pipeline {
     agent any
 
     environment {
-        // Docker Registry
-        REGISTRY_URL = '056666214492.dkr.ecr.ap-southeast-1.amazonaws.com'
-        REGISTRY_REPOSITORY= 'coworking-space-backend'             
+        REGISTRY_HOST = '056666214492.dkr.ecr.ap-southeast-1.amazonaws.com'
+        REGISTRY_CREDENTIAL = 'ecr:ap-southeast-1:coworking-space-backend'             
+        REGISTRY_REPOSITORY = 'coworking-space-backend'             
     }
 
-    stages{
+    stages {
         stage("Build") {
             steps{
-                echo 'Java Version:'
                 sh 'java -version'
-                echo 'Maven Version:'
                 sh 'mvn --version'
                 sh 'mvn -Dmaven.test.skip clean install spring-boot:repackage'
             }
@@ -20,10 +18,9 @@ pipeline{
 
         stage("Docker") {
             steps{ 
-                echo 'Docker -version'
                 sh 'docker version'
-                docker.withRegistry("https://${REGISTRY_URL}", REGISTRY_CREDENTIAL) {
-                    def image = docker.build("${REGISTRY_URL}/${REGISTRY_REPOSITORY}:latest",".")
+                docker.withRegistry("https://${REGISTRY_HOST}", REGISTRY_CREDENTIAL) {
+                    def image = docker.build("${REGISTRY_HOST}/${REGISTRY_REPOSITORY}:latest",".")
                     image.push()
                 }
                     

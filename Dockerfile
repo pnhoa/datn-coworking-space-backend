@@ -1,4 +1,4 @@
-FROM eclipse-temurin:8-alpine
+FROM eclipse-temurin:11-alpine
 WORKDIR /app
 COPY /target/coworking-space.jar /app/coworking-space.jar
 ENTRYPOINT ["java","-jar"]
