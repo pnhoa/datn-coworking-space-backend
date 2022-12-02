@@ -227,20 +227,32 @@ public class SpaceService implements ISpaceService {
 
             space.setServiceSpaces(serviceSpaces);
         }
-
-        if(files != null && files.length > 0) {
+        List<String> imageUrls = theSpaceDto.getImageUrls();
+        if(!CollectionUtils.isEmpty(imageUrls)) {
             List<Image> images = new ArrayList<>();
-            for(MultipartFile file: files) {
+            for(String imageStr : imageUrls) {
                 Image image = new Image();
-                String fileUrl = storageService.uploadFile(file, FileUtils.generateSpaceUUID()).replace(" ", "");
-                image.setFileName(fileUrl);
-                image.setUrl(fileUrl);
+                image.setFileName(imageStr);
+                image.setUrl(imageStr);
                 image.setSpace(space);
-
-                images.add(image);
             }
             space.setImages(images);
         }
+
+
+//        if(files != null && files.length > 0) {
+//            List<Image> images = new ArrayList<>();
+//            for(MultipartFile file: files) {
+//                Image image = new Image();
+//                String fileUrl = storageService.uploadFile(file, FileUtils.generateSpaceUUID()).replace(" ", "");
+//                image.setFileName(fileUrl);
+//                image.setUrl(fileUrl);
+//                image.setSpace(space);
+//
+//                images.add(image);
+//            }
+//            space.setImages(images);
+//        }
 
         spaceRepository.save(space);
 
