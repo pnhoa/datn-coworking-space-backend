@@ -4,6 +4,7 @@ import com.datn.coworkingspace.dto.*;
 import com.datn.coworkingspace.entity.Space;
 import com.datn.coworkingspace.entity.SubSpace;
 import com.datn.coworkingspace.service.ISpaceService;
+import com.datn.coworkingspace.service.StorageService;
 import com.datn.coworkingspace.utils.CommonUtils;
 import com.datn.coworkingspace.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +31,9 @@ public class SpaceAPI {
 
     @Autowired
     private ISpaceService spaceService;
+
+    @Autowired
+    private StorageService storageService;
 
     @GetMapping("/detail")
     public ResponseEntity<?> findAllDetails( @RequestParam(name = "q", required = false) String spaceName,
@@ -133,6 +137,19 @@ public class SpaceAPI {
 
         MessageResponse messageResponse = spaceService.createSpace(theSpaceDto, largeFile, files, subSpaceFiles);
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
+    }
+
+    @PostMapping(value = "/upload",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadImage(@RequestPart(value = "file") MultipartFile file) {
+        String profilePicture = "";
+        if(file != null) {
+            if(FileUtils.checkImageFile(file.getOriginalFilename())) {
+                profilePicture = storageService.uploadFile(file, FileUtils.generateProfileUUID()).replace(" ", "");
+            }
+        }
+        return  new ResponseEntity<>(profilePicture, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
