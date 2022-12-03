@@ -135,7 +135,7 @@ public class SpaceService implements ISpaceService {
         space.setxCoordinate(theSpaceDto.getxCoordinate());
         space.setyCoordinate(theSpaceDto.getyCoordinate());
         space.setDiscount(theSpaceDto.getDiscount());
-        space.setRatingAverage(BigDecimal.ZERO);
+        space.setRatingAverage(new BigDecimal("5"));
         space.setCreatedBy(user.get().getName());
         space.setCreatedDate(new Date());
 
@@ -435,7 +435,9 @@ public class SpaceService implements ISpaceService {
     public Page<SpaceOverviewDTO> findNearByForCustomer(Long userId, Long spaceId, Pageable pagingSort) {
         Optional<User> user = userRepository.findByIdCustomer(userId);
         if(!user.isPresent()) {
-            return new PageImpl<>(new ArrayList<>(), pagingSort, 0);
+            if (!userId.equals(Long.valueOf(0))) {
+                return new PageImpl<>(new ArrayList<>(), pagingSort, 0);
+            }
         }
         Optional<Space> space = spaceRepository.findById(spaceId);
         if(!space.isPresent()) {
@@ -458,7 +460,12 @@ public class SpaceService implements ISpaceService {
 
         }
         spaceIds.remove(spaceId);
-        Page<SpaceOverviewDTO> spacePage =  spaceRepository.findSpaceByIds(spaceIds, pagingSort).map(this::spaceToSpaceOverviewDTO);
+        Page<SpaceOverviewDTO> spacePage;
+        if(spaceIds.size() == 0) {
+            spacePage = this.findBySearchContentOverviewContaining(null, null, null, null, null, true, false, true, false, pagingSort);
+        } else {
+            spacePage =  spaceRepository.findSpaceByIds(spaceIds, pagingSort).map(this::spaceToSpaceOverviewDTO);
+        }
 
         return spacePage;
     }

@@ -74,7 +74,7 @@ public interface SpaceRepository extends JpaRepository<Space, Long> {
     Long countSpacesByCategoryId(Long categoryId);
 
 
-    @Query(value = "SELECT s FROM Space s WHERE s.id IN :listId")
+    @Query(value = "SELECT s FROM Space s WHERE s.id IN :listId AND s.approved=true AND s.notApproved=false AND s.status=true AND s.expired=false ")
     Page<Space> findSpaceByIds(Set<Long> listId, Pageable pagingSort);
 
     Page<Space> findByNameContainingIgnoreCaseOrSpaceAddress_CountryContainingIgnoreCaseOrSpaceAddress_ProvinceContainingIgnoreCaseOrSpaceAddress_DistrictContainingIgnoreCase(String spaceName, String country, String province, String district, Pageable pagingSort);
