@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Set;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findByNameContainingIgnoreCaseOrEmailContainingIgnoreCaseOrCompanyNameContainingIgnoreCaseOrPhoneNumberContainingIgnoreCase(String name, String email, String companyName, String phoneNumber, Pageable pageable);
@@ -18,4 +19,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     Page<Booking> findByUserId(Long customerId, Pageable pagingSort);
 
     Page<Booking> findBySpaceOwnerId(Long spaceOwnerId, Pageable pagingSort);
+
+    @Query("SELECT b.spaceId FROM Booking b WHERE b.user.id=?1 GROUP BY b.spaceId")
+    Set<Long> findAllSpaceIdByUserId(Long userId);
 }

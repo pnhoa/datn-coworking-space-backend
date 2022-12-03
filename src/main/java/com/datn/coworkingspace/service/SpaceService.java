@@ -235,6 +235,8 @@ public class SpaceService implements ISpaceService {
                 image.setFileName(imageStr);
                 image.setUrl(imageStr);
                 image.setSpace(space);
+
+                images.add(image);
             }
             space.setImages(images);
         }
@@ -427,6 +429,38 @@ public class SpaceService implements ISpaceService {
     public Page<SpaceOverviewDTO> findAllOverviewByCustomerIdPageAndSort(Long customerId, Pageable pagingSort) {
         Page<SpaceOverviewDTO> spacePage =  spaceRepository.findByUserId(customerId, pagingSort).map(this::spaceToSpaceOverviewDTO);
         return  spacePage;
+    }
+
+    @Override
+    public Page<SpaceOverviewDTO> findNearByForCustomer(Long userId, Long spaceId, Pageable pagingSort) {
+        Optional<User> user = userRepository.findByIdCustomer(userId);
+        if(!user.isPresent()) {
+            return new PageImpl<>(new ArrayList<>(), pagingSort, 0);
+        }
+        Optional<Space> space = spaceRepository.findById(spaceId);
+        if(!space.isPresent()) {
+            return new PageImpl<>(new ArrayList<>(), pagingSort, 0);
+        }
+        Set<Long> spaceIds = new HashSet<>();
+        spaceIds = bookingRepository.findAllSpaceIdByUserId(userId);
+
+        if(spaceIds.size() <= 8) {
+            SpaceAddress spaceAddress = space.get().getSpaceAddress();
+            String subDistrict = spaceAddress.getSubDistrict() == null ? "" : spaceAddress.getSubDistrict();
+            String district = spaceAddress.getDistrict();
+            String province = spaceAddress.getProvince();
+            String country = spaceAddress.getCountry();
+            Set<Long> nearBySpaceAddressIds = spaceAddressRepository.getAllNearBySpaceAddressIds(subDistrict, district, province, country);
+            if(!CollectionUtils.isEmpty(nearBySpaceAddressIds)) {
+                Set<Long> nearBySpaceIds = spaceRepository.findAllBySpaceAddressIds(nearBySpaceAddressIds);
+                spaceIds.addAll(nearBySpaceIds);
+            }
+
+        }
+        spaceIds.remove(spaceId);
+        Page<SpaceOverviewDTO> spacePage =  spaceRepository.findSpaceByIds(spaceIds, pagingSort).map(this::spaceToSpaceOverviewDTO);
+
+        return spacePage;
     }
 
     @Override
