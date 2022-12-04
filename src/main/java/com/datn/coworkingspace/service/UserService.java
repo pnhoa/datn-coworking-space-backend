@@ -204,6 +204,12 @@ public class UserService implements IUserService {
         return userRepository.existsByUserName(username);
     }
 
+    @Override
+    public Optional<User> findByUserName(String userName) {
+        Optional<User> user = userRepository.findByEmail(userName);
+        return user;
+    }
+
 
     @Override
     public Page<User> findAllPageAndSortEmployee(Pageable pagingSort) {

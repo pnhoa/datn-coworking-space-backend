@@ -2,6 +2,7 @@ package com.datn.coworkingspace.api;
 
 import com.datn.coworkingspace.dto.*;
 import com.datn.coworkingspace.entity.RefreshToken;
+import com.datn.coworkingspace.entity.User;
 import com.datn.coworkingspace.exception.TokenRefreshException;
 import com.datn.coworkingspace.service.IBlacklistService;
 import com.datn.coworkingspace.service.IRefreshTokenService;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -56,6 +58,13 @@ public class AuthAPI {
         if(bindingResult.hasErrors()) {
             return new ResponseEntity<MessageResponse>(new MessageResponse("Invalid value for login", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
         }
+        Optional<User> user = customerService.findByUserName(loginDto.getUserName());
+        if(user.isPresent()) {
+            if(user.get().getEnabled() == 0) {
+                return new ResponseEntity<>(new MessageResponse("Account is blocked.", HttpStatus.UNAUTHORIZED, LocalDateTime.now()), HttpStatus.UNAUTHORIZED);
+            }
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.getUserName(),
                         loginDto.getPassword()));
