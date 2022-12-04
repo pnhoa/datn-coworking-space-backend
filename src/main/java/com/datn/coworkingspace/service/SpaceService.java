@@ -433,15 +433,19 @@ public class SpaceService implements ISpaceService {
 
     @Override
     public Page<SpaceOverviewDTO> findNearByForCustomer(Long userId, Long spaceId, Pageable pagingSort) {
+        Page<SpaceOverviewDTO> spacePage;
+
         Optional<User> user = userRepository.findByIdCustomer(userId);
         if(!user.isPresent()) {
             if (!userId.equals(Long.valueOf(0))) {
-                return new PageImpl<>(new ArrayList<>(), pagingSort, 0);
+                spacePage = this.findBySearchContentOverviewContaining(null, null, null, null, null, true, false, true, false, pagingSort);
+                return spacePage;
             }
         }
         Optional<Space> space = spaceRepository.findById(spaceId);
         if(!space.isPresent()) {
-            return new PageImpl<>(new ArrayList<>(), pagingSort, 0);
+            spacePage = this.findBySearchContentOverviewContaining(null, null, null, null, null, true, false, true, false, pagingSort);
+            return spacePage;
         }
         Set<Long> spaceIds = new HashSet<>();
         spaceIds = bookingRepository.findAllSpaceIdByUserId(userId);
@@ -460,7 +464,6 @@ public class SpaceService implements ISpaceService {
 
         }
         spaceIds.remove(spaceId);
-        Page<SpaceOverviewDTO> spacePage;
         if(spaceIds.size() == 0) {
             spacePage = this.findBySearchContentOverviewContaining(null, null, null, null, null, true, false, true, false, pagingSort);
         } else {
