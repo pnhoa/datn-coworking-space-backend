@@ -72,7 +72,7 @@ public interface IUserService extends UserDetailsService {
 
     Page<User> findByUserNameContainingAndEnabledCustomer(String userName, Integer enabled, Pageable pagingSort);
 
-    MessageResponse activeCustomer(String userName);
+    MessageResponse activeCustomer(Long userId);
 
-    MessageResponse activeEmployee(String userName);
+    MessageResponse activeEmployee(Long userId);
 }

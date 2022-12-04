@@ -99,10 +99,10 @@ public class CustomerAPI {
         return new ResponseEntity<>(customerService.countCustomer(), HttpStatus.OK);
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<MessageResponse> activeCustomer(@RequestParam(name = "username", required = true) String userName){
+    @PutMapping("/active/{userId}")
+    public ResponseEntity<MessageResponse> activeCustomer(@PathVariable("userId") Long userId){
 
-        MessageResponse messageResponse = customerService.activeCustomer(userName);
+        MessageResponse messageResponse = customerService.activeCustomer(userId);
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
 }
