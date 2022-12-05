@@ -29,6 +29,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b.subSpace.packageSubSpace.serviceSpace.space.category.id AS categoryId, b.subSpace.packageSubSpace.serviceSpace.space.category.name AS categoryName, SUM(b.totalPrice) AS quantity from Booking b WHERE b.createdDate>=?1 AND b.createdDate<?2 GROUP BY b.subSpace.packageSubSpace.serviceSpace.space.category.id, b.subSpace.packageSubSpace.serviceSpace.space.category.name ORDER BY b.subSpace.packageSubSpace.serviceSpace.space.category.id ASC")
     List<Map<String, Object>> getTotalSpaceBookingGroupByCategory(Timestamp date, Timestamp dateEndDate);
 
-    @Query("SELECT b.spaceId AS productId, b.subSpace.packageSubSpace.serviceSpace.space.name AS productName, COUNT(b.spaceId) AS quantity, SUM(b.totalPrice) AS totalPrice from Booking b WHERE b.createdDate>=?1 AND b.createdDate<?2 GROUP BY b.spaceId, b.subSpace.packageSubSpace.serviceSpace.space.name, b.subSpace.packageSubSpace.serviceSpace.space.price ORDER BY SUM(b.totalPrice) DESC")
-    List<Map<String, Object>> getAllTopSpaceByDay(Timestamp date, Timestamp dateEndDate, PageRequest of);
+    @Query("SELECT b.spaceId AS productId, b.subSpace.packageSubSpace.serviceSpace.space.name AS productName, COUNT(b.spaceId) AS quantity, SUM(b.totalPrice) AS totalPrice from Booking b WHERE b.createdDate>=?1 AND b.createdDate<?2 AND b.status <> ?3  GROUP BY b.spaceId, b.subSpace.packageSubSpace.serviceSpace.space.name, b.subSpace.packageSubSpace.serviceSpace.space.price ORDER BY SUM(b.totalPrice) DESC")
+    List<Map<String, Object>> getAllTopSpaceByDay(Timestamp date, Timestamp dateEndDate, BookingStatus cancelled, PageRequest of);
 }

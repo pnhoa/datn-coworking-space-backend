@@ -266,7 +266,7 @@ public class SpaceAPI {
     @GetMapping("")
     public ResponseEntity<?> findAllOverviewAndSearchForCustomer( @RequestParam(name = "q", required = false) String content,
                                               @RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "20") int limit,
+                                              @RequestParam(defaultValue = "12") int limit,
                                               @RequestParam(defaultValue = "id,ASC") String[] sort){
 
         try {

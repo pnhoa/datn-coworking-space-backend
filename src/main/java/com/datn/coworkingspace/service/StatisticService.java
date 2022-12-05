@@ -1,11 +1,13 @@
 package com.datn.coworkingspace.service;
 
 import com.datn.coworkingspace.entity.Category;
+import com.datn.coworkingspace.enums.BookingStatus;
 import com.datn.coworkingspace.repository.BookingRepository;
 import com.datn.coworkingspace.repository.CategoryRepository;
 import com.datn.coworkingspace.repository.SpacePaymentRepository;
 import com.datn.coworkingspace.repository.SpaceRepository;
 import com.datn.coworkingspace.utils.CommonUtils;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.PageRequest;
@@ -170,7 +172,7 @@ public class StatisticService implements IStatisticService {
         try {
             Timestamp date = CommonUtils.convertStringToTimestamp(day, "dd-MM-yyyy");
             Timestamp dateEndDate = CommonUtils.incrementTimestamp(date, 1);
-            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, PageRequest.of(0,5));
+            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, EnumUtils.getEnum(BookingStatus.class, "CANCELLED"), PageRequest.of(0,5));
 
             return listSoldProduct;
         } catch (Exception e) {
@@ -185,7 +187,7 @@ public class StatisticService implements IStatisticService {
         try {
             Timestamp date = CommonUtils.convertStringToMonth(month, "-");
             Timestamp dateEndDate = CommonUtils.incrementTimestamp(date, CommonUtils.countDayOfMonth(month, "-"));
-            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, PageRequest.of(0, 5));
+            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, EnumUtils.getEnum(BookingStatus.class, "CANCELLED"), PageRequest.of(0, 5));
 
             return listSoldProduct;
 
@@ -200,7 +202,7 @@ public class StatisticService implements IStatisticService {
         try {
             Timestamp date = CommonUtils.convertStringToQuarter(quarter, "-");
             Timestamp dateEndDate = CommonUtils.incrementTimestamp(date, CommonUtils.countDayOfQuarter(quarter, "-"));
-            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, PageRequest.of(0, 5));
+            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, EnumUtils.getEnum(BookingStatus.class, "CANCELLED"), PageRequest.of(0, 5));
 
             return listSoldProduct;
 
@@ -215,7 +217,7 @@ public class StatisticService implements IStatisticService {
         try {
             Timestamp date = CommonUtils.convertStringToYear(year);
             Timestamp dateEndDate = CommonUtils.incrementTimestamp(date, 365);
-            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, PageRequest.of(0, 5));
+            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, EnumUtils.getEnum(BookingStatus.class, "CANCELLED"), PageRequest.of(0, 5));
 
             return listSoldProduct;
 
