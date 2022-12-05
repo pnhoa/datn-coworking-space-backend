@@ -83,4 +83,7 @@ public interface SpaceRepository extends JpaRepository<Space, Long> {
 
     @Query(value = "SELECT s.id FROM Space s WHERE s.spaceAddress.id IN :nearBySpaceAddressIds")
     Set<Long> findAllBySpaceAddressIds(Set<Long> nearBySpaceAddressIds);
+
+    @Query(value = "SELECT count(s) FROM Space s WHERE s.approved=true AND s.notApproved=false AND s.status=true AND s.expired=false ")
+    Long countSpaceActive();
 }

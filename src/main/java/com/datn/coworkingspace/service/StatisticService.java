@@ -4,9 +4,11 @@ import com.datn.coworkingspace.entity.Category;
 import com.datn.coworkingspace.repository.BookingRepository;
 import com.datn.coworkingspace.repository.CategoryRepository;
 import com.datn.coworkingspace.repository.SpacePaymentRepository;
+import com.datn.coworkingspace.repository.SpaceRepository;
 import com.datn.coworkingspace.utils.CommonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,9 @@ public class StatisticService implements IStatisticService {
 
     @Autowired
     private BookingRepository bookingRepository;
+
+    @Autowired
+    private SpaceRepository spaceRepository;
 
     @Override
     public BigDecimal getAllRevenueByDay(String day) {
@@ -143,6 +148,76 @@ public class StatisticService implements IStatisticService {
             }
 
             return listSoldByCategoryProcess1;
+
+        } catch(Exception e)  {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Long getTotalSpaceActive() {
+        return spaceRepository.countSpaceActive();
+    }
+
+    @Override
+    public Long getTotalBooking() {
+        return bookingRepository.count();
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllTopSpaceByDay(String day) {
+        try {
+            Timestamp date = CommonUtils.convertStringToTimestamp(day, "dd-MM-yyyy");
+            Timestamp dateEndDate = CommonUtils.incrementTimestamp(date, 1);
+            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, PageRequest.of(0,5));
+
+            return listSoldProduct;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllTopSpaceByMonth(String month) {
+        try {
+            Timestamp date = CommonUtils.convertStringToMonth(month, "-");
+            Timestamp dateEndDate = CommonUtils.incrementTimestamp(date, CommonUtils.countDayOfMonth(month, "-"));
+            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, PageRequest.of(0, 5));
+
+            return listSoldProduct;
+
+        } catch(Exception e)  {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllTopSpaceByQuarter(String quarter) {
+        try {
+            Timestamp date = CommonUtils.convertStringToQuarter(quarter, "-");
+            Timestamp dateEndDate = CommonUtils.incrementTimestamp(date, CommonUtils.countDayOfQuarter(quarter, "-"));
+            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, PageRequest.of(0, 5));
+
+            return listSoldProduct;
+
+        } catch(Exception e)  {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Map<String, Object>> getAllTopSpaceByYear(String year) {
+        try {
+            Timestamp date = CommonUtils.convertStringToYear(year);
+            Timestamp dateEndDate = CommonUtils.incrementTimestamp(date, 365);
+            List<Map<String, Object>> listSoldProduct = bookingRepository.getAllTopSpaceByDay(date, dateEndDate, PageRequest.of(0, 5));
+
+            return listSoldProduct;
 
         } catch(Exception e)  {
             e.printStackTrace();

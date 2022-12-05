@@ -15,4 +15,12 @@ public interface IStatisticService {
 
     List<Map<String, Object>> getTotalSpaceBookingGroupByCategoryByMonthInYear1(String year);
 
+    Long getTotalSpaceActive();
+
+    Long getTotalBooking();
+
+    List<Map<String, Object>> getAllTopSpaceByDay(String day);
+    List<Map<String, Object>> getAllTopSpaceByMonth(String month);
+    List<Map<String, Object>> getAllTopSpaceByQuarter(String quarter);
+    List<Map<String, Object>> getAllTopSpaceByYear(String year);
 }
