@@ -43,4 +43,10 @@ public class StatisticAPI {
 
         return new ResponseEntity<>(new MessageResponse("Please provide time to get revenue", HttpStatus.BAD_REQUEST, LocalDateTime.now()), HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/categories/data")
+    public ResponseEntity<?> getTotalSpaceBookingGroupByCategoryByMonthInYear(@RequestParam(name = "year", required = false) String year) {
+
+        return new ResponseEntity<>(statisticService.getTotalSpaceBookingGroupByCategoryByMonthInYear1(year == null ? CommonUtils.covertDateNowToYearString(): year), HttpStatus.OK);
+    }
 }
