@@ -204,6 +204,12 @@ public class UserService implements IUserService {
         return userRepository.existsByUserName(username);
     }
 
+    @Override
+    public Optional<User> findByUserName(String userName) {
+        Optional<User> user = userRepository.findByEmail(userName);
+        return user;
+    }
+
 
     @Override
     public Page<User> findAllPageAndSortEmployee(Pageable pagingSort) {
@@ -479,10 +485,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public MessageResponse activeCustomer(String userName) {
-        Optional<User> customer = userRepository.findByUserNameAndIsAccCustomer(userName, true);
+    public MessageResponse activeCustomer(Long userId) {
+        Optional<User> customer = userRepository.findByIdCustomer(userId);
         if(!customer.isPresent()) {
-            return new MessageResponse("Not find customer with username= " + userName, HttpStatus.NOT_FOUND, LocalDateTime.now());
+            return new MessageResponse("Not find customer with ID= " + userId, HttpStatus.NOT_FOUND, LocalDateTime.now());
         }
         if(customer.get().getEnabled() == 1){
             return new MessageResponse("Customer has been active", HttpStatus.BAD_REQUEST, LocalDateTime.now());
@@ -493,10 +499,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public MessageResponse activeEmployee(String userName) {
-        Optional<User> employee = userRepository.findByUserNameAndIsAccCustomer(userName, false);
+    public MessageResponse activeEmployee(Long userId) {
+        Optional<User> employee = userRepository.findByIdEmployee(userId);
         if(!employee.isPresent()) {
-            return new MessageResponse("Not find employee with username= " + userName, HttpStatus.NOT_FOUND, LocalDateTime.now());
+            return new MessageResponse("Not find employee with ID= " + userId, HttpStatus.NOT_FOUND, LocalDateTime.now());
         }
         if(employee.get().getEnabled() == 1){
             return new MessageResponse("Employee has been active", HttpStatus.BAD_REQUEST, LocalDateTime.now());

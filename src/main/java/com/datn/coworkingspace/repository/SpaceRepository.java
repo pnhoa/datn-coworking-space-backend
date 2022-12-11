@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public interface SpaceRepository extends JpaRepository<Space, Long> {
 
@@ -73,10 +74,16 @@ public interface SpaceRepository extends JpaRepository<Space, Long> {
     Long countSpacesByCategoryId(Long categoryId);
 
 
-    @Query(value = "SELECT s FROM Space s WHERE s.id IN :listId")
-    Page<Space> findSpaceByIds(Collection<Long> listId, Pageable pagingSort);
+    @Query(value = "SELECT s FROM Space s WHERE s.id IN :listId AND s.approved=true AND s.notApproved=false AND s.status=true AND s.expired=false ")
+    Page<Space> findSpaceByIds(Set<Long> listId, Pageable pagingSort);
 
     Page<Space> findByNameContainingIgnoreCaseOrSpaceAddress_CountryContainingIgnoreCaseOrSpaceAddress_ProvinceContainingIgnoreCaseOrSpaceAddress_DistrictContainingIgnoreCase(String spaceName, String country, String province, String district, Pageable pagingSort);
 
     Page<Space> findByUserId(Long customerId, Pageable pagingSort);
+
+    @Query(value = "SELECT s.id FROM Space s WHERE s.spaceAddress.id IN :nearBySpaceAddressIds")
+    Set<Long> findAllBySpaceAddressIds(Set<Long> nearBySpaceAddressIds);
+
+    @Query(value = "SELECT count(s) FROM Space s WHERE s.approved=true AND s.notApproved=false AND s.status=true AND s.expired=false ")
+    Long countSpaceActive();
 }

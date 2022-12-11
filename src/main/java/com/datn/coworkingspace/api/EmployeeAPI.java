@@ -118,10 +118,10 @@ public class EmployeeAPI {
         return new ResponseEntity<>(employeeService.countEmployee(), HttpStatus.OK);
     }
 
-    @GetMapping("/active")
-    public ResponseEntity<MessageResponse> activeEmployee(@RequestParam(name = "username", required = true) String userName){
+    @PutMapping("/active/{userId}")
+    public ResponseEntity<MessageResponse> activeEmployee(@PathVariable("userId") Long userId){
 
-        MessageResponse messageResponse = employeeService.activeEmployee(userName);
+        MessageResponse messageResponse = employeeService.activeEmployee(userId);
         return new ResponseEntity<>(messageResponse, messageResponse.getStatus());
     }
 }

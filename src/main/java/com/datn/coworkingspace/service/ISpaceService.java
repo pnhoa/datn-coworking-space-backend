@@ -63,4 +63,6 @@ public interface ISpaceService {
     List<SubSpace> findMatchSpace(MatchSubSpaceDTO matchSubSpaceDTO);
 
     Page<SpaceOverviewDTO> findAllOverviewByCustomerIdPageAndSort(Long customerId, Pageable pagingSort);
+
+    Page<SpaceOverviewDTO> findNearByForCustomer(Long userId, Long spaceId, Pageable pagingSort);
 }

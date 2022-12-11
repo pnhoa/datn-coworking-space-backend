@@ -135,7 +135,7 @@ public class SpaceService implements ISpaceService {
         space.setxCoordinate(theSpaceDto.getxCoordinate());
         space.setyCoordinate(theSpaceDto.getyCoordinate());
         space.setDiscount(theSpaceDto.getDiscount());
-        space.setRatingAverage(BigDecimal.ZERO);
+        space.setRatingAverage(new BigDecimal("5"));
         space.setCreatedBy(user.get().getName());
         space.setCreatedDate(new Date());
 
@@ -227,20 +227,34 @@ public class SpaceService implements ISpaceService {
 
             space.setServiceSpaces(serviceSpaces);
         }
-
-        if(files != null && files.length > 0) {
+        List<String> imageUrls = theSpaceDto.getImageUrls();
+        if(!CollectionUtils.isEmpty(imageUrls)) {
             List<Image> images = new ArrayList<>();
-            for(MultipartFile file: files) {
+            for(String imageStr : imageUrls) {
                 Image image = new Image();
-                String fileUrl = storageService.uploadFile(file, FileUtils.generateSpaceUUID()).replace(" ", "");
-                image.setFileName(fileUrl);
-                image.setUrl(fileUrl);
+                image.setFileName(imageStr);
+                image.setUrl(imageStr);
                 image.setSpace(space);
 
                 images.add(image);
             }
             space.setImages(images);
         }
+
+
+//        if(files != null && files.length > 0) {
+//            List<Image> images = new ArrayList<>();
+//            for(MultipartFile file: files) {
+//                Image image = new Image();
+//                String fileUrl = storageService.uploadFile(file, FileUtils.generateSpaceUUID()).replace(" ", "");
+//                image.setFileName(fileUrl);
+//                image.setUrl(fileUrl);
+//                image.setSpace(space);
+//
+//                images.add(image);
+//            }
+//            space.setImages(images);
+//        }
 
         spaceRepository.save(space);
 
@@ -415,6 +429,48 @@ public class SpaceService implements ISpaceService {
     public Page<SpaceOverviewDTO> findAllOverviewByCustomerIdPageAndSort(Long customerId, Pageable pagingSort) {
         Page<SpaceOverviewDTO> spacePage =  spaceRepository.findByUserId(customerId, pagingSort).map(this::spaceToSpaceOverviewDTO);
         return  spacePage;
+    }
+
+    @Override
+    public Page<SpaceOverviewDTO> findNearByForCustomer(Long userId, Long spaceId, Pageable pagingSort) {
+        Page<SpaceOverviewDTO> spacePage;
+
+        Optional<User> user = userRepository.findByIdCustomer(userId);
+        if(!user.isPresent()) {
+            if (!userId.equals(Long.valueOf(0))) {
+                spacePage = this.findBySearchContentOverviewContaining(null, null, null, null, null, true, false, true, false, pagingSort);
+                return spacePage;
+            }
+        }
+        Optional<Space> space = spaceRepository.findById(spaceId);
+        if(!space.isPresent()) {
+            spacePage = this.findBySearchContentOverviewContaining(null, null, null, null, null, true, false, true, false, pagingSort);
+            return spacePage;
+        }
+        Set<Long> spaceIds = new HashSet<>();
+        spaceIds = bookingRepository.findAllSpaceIdByUserId(userId);
+
+        if(spaceIds.size() <= 8) {
+            SpaceAddress spaceAddress = space.get().getSpaceAddress();
+            String subDistrict = spaceAddress.getSubDistrict() == null ? "" : spaceAddress.getSubDistrict();
+            String district = spaceAddress.getDistrict();
+            String province = spaceAddress.getProvince();
+            String country = spaceAddress.getCountry();
+            Set<Long> nearBySpaceAddressIds = spaceAddressRepository.getAllNearBySpaceAddressIds(subDistrict, district, province, country);
+            if(!CollectionUtils.isEmpty(nearBySpaceAddressIds)) {
+                Set<Long> nearBySpaceIds = spaceRepository.findAllBySpaceAddressIds(nearBySpaceAddressIds);
+                spaceIds.addAll(nearBySpaceIds);
+            }
+
+        }
+        spaceIds.remove(spaceId);
+        if(spaceIds.size() == 0) {
+            spacePage = this.findBySearchContentOverviewContaining(null, null, null, null, null, true, false, true, false, pagingSort);
+        } else {
+            spacePage =  spaceRepository.findSpaceByIds(spaceIds, pagingSort).map(this::spaceToSpaceOverviewDTO);
+        }
+
+        return spacePage;
     }
 
     @Override

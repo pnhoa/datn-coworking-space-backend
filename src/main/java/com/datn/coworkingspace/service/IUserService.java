@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 
 public interface IUserService extends UserDetailsService {
 
@@ -27,6 +28,8 @@ public interface IUserService extends UserDetailsService {
     Boolean existsByEmail(String email);
 
     Boolean existsByUserName(String username);
+
+    Optional<User> findByUserName(String userName);
 
     User findByIdEmployee(Long employeeId);
 
@@ -69,7 +72,7 @@ public interface IUserService extends UserDetailsService {
 
     Page<User> findByUserNameContainingAndEnabledCustomer(String userName, Integer enabled, Pageable pagingSort);
 
-    MessageResponse activeCustomer(String userName);
+    MessageResponse activeCustomer(Long userId);
 
-    MessageResponse activeEmployee(String userName);
+    MessageResponse activeEmployee(Long userId);
 }
